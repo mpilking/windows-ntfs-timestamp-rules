@@ -1,0 +1,108 @@
+﻿{
+    "CapturedUtc":  "2026-10-01T16:37:47.8147995Z",
+    "Hostname":  "WIN11",
+    "OSCaption":  "Microsoft Windows 11 Pro",
+    "OSProductType":  "Workstation",
+    "DisplayVersion":  "25H2",
+    "BuildNumber":  "26200",
+    "UBR":  9168,
+    "FullBuild":  "26200.9168",
+    "EditionID":  "Professional",
+    "NtfsDriver":  {
+                       "Path":  "C:\\WINDOWS\\System32\\drivers\\ntfs.sys",
+                       "FileVersion":  "10.0.26100.1 (WinBuild.160101.0800)",
+                       "ProductVersion":  "10.0.26100.1",
+                       "SizeBytes":  3556856,
+                       "LastWriteUtc":  "2026-08-28T01:24:07.1178562Z",
+                       "SHA256":  "24B023140A6D162DB3FE0D701109FC0BE4FDD9EC65E1C40522934AE3CC0A28C6"
+                   },
+    "NtOsKernel":  {
+                       "Path":  "C:\\WINDOWS\\System32\\ntoskrnl.exe",
+                       "FileVersion":  "10.0.26100.9168 (WinBuild.160101.0800)",
+                       "ProductVersion":  "10.0.26100.9168",
+                       "SizeBytes":  13047280,
+                       "LastWriteUtc":  "2026-08-28T01:24:10.3738269Z",
+                       "SHA256":  "13AA072103656881BAB86C09AC0F8362265783BBFB428E85FF060E6018EC2488"
+                   },
+    "InstalledUpdates":  [
+                             "KB5123304 2026-08-28",
+                             "KB5121003 2026-08-28",
+                             "KB5122035 2026-08-28",
+                             "KB5066128 2026-03-06",
+                             "KB5054156 2026-03-06"
+                         ],
+    "TimeZone":  "Pacific Standard Time",
+    "IsVirtualMachine":  true,
+    "Hypervisor":  "VMware, Inc.",
+    "Elevated":  true,
+    "Fsutil_DisableLastAccess":  "DisableLastAccess = 2  (System Managed, Last Access Time Updates ENABLED)",
+    "Fsutil_Disable8dot3":  "The registry state is: 2 (Per volume setting - the default)",
+    "Fsutil_MftZone":  "MftZone = 0  (translates to a zone size of 200.0 MB)",
+    "Reg_NtfsDisableLastAccessUpdate":  2147483650,
+    "Reg_MaximumTunnelEntries":  null,
+    "Reg_MaximumTunnelEntryAgeInSeconds":  null,
+    "TunnelingEffective":  "DEFAULT (~15s, ENABLED)",
+    "InterferingAgents":  [
+                              "MpDefenderCoreService",
+                              "MsMpEng",
+                              "SearchIndexer"
+                          ],
+    "Volumes":  [
+                    {
+                        "Drive":  "C:",
+                        "FileSystem":  "NTFS",
+                        "Label":  "",
+                        "SizeBytes":  1072616697856,
+                        "SizeGB":  998.95,
+                        "FreeGB":  966.67,
+                        "BytesPerCluster":  4096,
+                        "NtfsOnDiskVersion":  "3.1",
+                        "UnderThreshold128G":  false,
+                        "MftValidDataLength":  "276.75"
+                    },
+                    {
+                        "Drive":  "V:",
+                        "FileSystem":  "NTFS",
+                        "Label":  "NTFSTEST64",
+                        "SizeBytes":  68701646848,
+                        "SizeGB":  63.98,
+                        "FreeGB":  63.89,
+                        "BytesPerCluster":  4096,
+                        "NtfsOnDiskVersion":  "3.1",
+                        "UnderThreshold128G":  true,
+                        "MftValidDataLength":  "256.00"
+                    },
+                    {
+                        "Drive":  "W:",
+                        "FileSystem":  "NTFS",
+                        "Label":  "NTFSTEST256",
+                        "SizeBytes":  274860077056,
+                        "SizeGB":  255.98,
+                        "FreeGB":  255.88,
+                        "BytesPerCluster":  4096,
+                        "NtfsOnDiskVersion":  "3.1",
+                        "UnderThreshold128G":  false,
+                        "MftValidDataLength":  "256.00"
+                    }
+                ],
+    "Tools":  {
+                  "fsutil.exe":  {
+                                     "Path":  "C:\\WINDOWS\\system32\\fsutil.exe",
+                                     "Version":  "10.0.26100.8115 (WinBuild.160101.0800)",
+                                     "SHA256":  "3FCA44B7CE971031C08296647821E04DC7AA62C0F5846A3A0DC7015D5A4BC501"
+                                 },
+                  "MFTECmd.exe":  null,
+                  "xcopy.exe":  {
+                                    "Path":  "C:\\WINDOWS\\system32\\xcopy.exe",
+                                    "Version":  "10.0.26100.1 (WinBuild.160101.0800)",
+                                    "SHA256":  "96E01CDC713A4306ABB3B58AEF982D67A209DDDADC8CFF5C4C77A5595F712828"
+                                },
+                  "fls.exe":  null,
+                  "istat.exe":  null,
+                  "robocopy.exe":  {
+                                       "Path":  "C:\\WINDOWS\\system32\\Robocopy.exe",
+                                       "Version":  "10.0.26100.1 (WinBuild.160101.0800)",
+                                       "SHA256":  "D265592C334BAD1FFF8379F314AEF8505845671D87B8710CD8ACA307E145D135"
+                                   }
+              }
+}

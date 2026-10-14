@@ -1,0 +1,204 @@
+PS C:\Users\<harness-user>> cd C:\NtfsTest\repo
+PS C:\NtfsTest\repo> Set-ExecutionPolicy Bypass -Scope Process -Force
+PS C:\NtfsTest\repo> .\provision\Mount-TestVolumes.ps1 | Format-Table Name,Expected,Status,SizeGB,ShortNames -AutoSize
+
+Name Expected Status   SizeGB Label       ShortNames
+---- -------- ------   ------ -----       ----------
+V64  V:       attached  63.98 NTFSTEST64  ENABLED
+V256 W:       attached 255.98 NTFSTEST256 ENABLED
+V64K X:       attached  63.98 NTFSTEST64K ENABLED
+
+
+
+Name Expected Status   SizeGB ShortNames
+---- -------- ------   ------ ----------
+V64  V:       attached  63.98 ENABLED
+V256 W:       attached 255.98 ENABLED
+V64K X:       attached  63.98 ENABLED
+
+
+PS C:\NtfsTest\repo> .\provision\Set-AmbientConfig.ps1 -Mode CleanRoom | Format-Table Item,Action,Detail -AutoSize
+Mode: CleanRoom
+
+Item     Action                  Detail
+----     ------                  ------
+Defender ExclusionAlreadyPresent V:\
+Defender ExclusionAlreadyPresent W:\
+Defender ExclusionAlreadyPresent X:\
+Defender RealTimeProtection      True (intentionally left ON)
+OneDrive NoAction                running=False mode=CleanRoom
+WSearch  Stopped                 was Running
+
+
+
+Item     Action                  Detail
+----     ------                  ------
+Defender ExclusionAlreadyPresent V:\
+Defender ExclusionAlreadyPresent W:\
+Defender ExclusionAlreadyPresent X:\
+Defender RealTimeProtection      True (intentionally left ON)
+OneDrive NoAction                running=False mode=CleanRoom
+WSearch  Stopped                 was Running
+
+
+PS C:\NtfsTest\repo> 'Exclusions : ' + ((Get-MpPreference).ExclusionPath -join ', ')
+Exclusions : V:\, W:\, X:\
+PS C:\NtfsTest\repo> 'WSearch    : ' + (Get-Service WSearch).Status
+WSearch    : Stopped
+PS C:\NtfsTest\repo> 'Elevated   : ' + ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole('Administrators')
+Elevated   : True
+PS C:\NtfsTest\repo> .\harness\Invoke-ExplorerTest.ps1 -RunLabel 'explorer02'
+
+=== PHASE 1: staging 11 cases ===
+  staged. Letting creation timestamps settle...
+
+=== PHASE 2: before snapshots ===
+  V:  MFTECmd=105 Velociraptor=105 mft_dump=103
+  W:  MFTECmd=47 Velociraptor=47 mft_dump=44
+
+=== PHASE 3: perform each operation in Explorer ===
+Press Enter immediately BEFORE acting, and again immediately AFTER.
+Type s then Enter to skip a case.
+
+------------------------------------------------------------------------------
+CASE 01_file_access_explorer_browse
+  why    : Control: does merely browsing/selecting update Access?
+  file   : V:\case_2e2370393500\create_LongEnoughToForceShortName_c06f5ea1.txt
+  ACTION : SELECT the file once in Explorer (single click). Do not open it.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted):
+  recorded: 22:37:46.229 -> 22:37:57.340 UTC
+------------------------------------------------------------------------------
+CASE 02_file_access_explorer_open
+  why    : The commonest real-world "user accessed a file".
+  file   : V:\case_54f5e84075b4\create_LongEnoughToForceShortName_cf6e7869.txt
+  ACTION : DOUBLE-CLICK the file to open it in Notepad, then close Notepad.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted):
+  recorded: 22:38:50.812 -> 22:40:16.459 UTC
+------------------------------------------------------------------------------
+CASE 03_file_rename_explorer_rename
+  why    : CLI rename does not update Access on 25H2. Does Explorer differ?
+  file   : V:\case_87ec40380f3d\create_LongEnoughToForceShortName_08d5e969.txt
+  ACTION : Press F2 and rename the file to  renamed_explorer_<caseid>.txt
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): "V:\case_87ec40380f3d\ren02.txt"
+  recorded: 22:41:08.799 -> 22:42:09.478 UTC
+------------------------------------------------------------------------------
+CASE 04_file_copy_explorer_copy
+  why    : Baseline Explorer copy, same volume.
+  file   : V:\case_d2866c81896e\create_LongEnoughToForceShortName_b21d5a17.txt
+  dest   : V:\case_dac0259ddfdf
+  ACTION : Ctrl+C on the file, then Ctrl+V in the DESTINATION folder.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): V:\case_dac0259ddfdf\create_LongEnoughToForceShortName_b21d5a17.txt
+  recorded: 22:43:47.628 -> 22:44:13.106 UTC
+------------------------------------------------------------------------------
+CASE 05_file_move_local_explorer_cutpaste
+  why    : Explorer move within one volume.
+  file   : V:\case_21d73732ae93\create_LongEnoughToForceShortName_67a6936b.txt
+  dest   : V:\case_68b403d10e92
+  ACTION : Ctrl+X on the file, then Ctrl+V in the DESTINATION folder.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): "V:\case_68b403d10e92\create_LongEnoughToForceShortName_67a6936b.txt"
+
+  recorded: 22:48:09.012 -> 22:48:49.074 UTC
+------------------------------------------------------------------------------
+CASE 06_file_move_local_explorer_drag
+  why    : Does drag differ from cut/paste?
+  file   : V:\case_d88f23eeb070\create_LongEnoughToForceShortName_7091ec56.txt
+  dest   : V:\case_9c5a6e4d1033
+  ACTION : DRAG the file to the DESTINATION folder. Same volume, so this moves.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): "V:\case_9c5a6e4d1033\create_LongEnoughToForceShortName_7091ec56.txt"
+
+  recorded: 22:50:15.940 -> 22:50:47.006 UTC
+------------------------------------------------------------------------------
+CASE 07_file_move_volume_explorer_cutpaste
+  why    : THE CRITICAL CASE. The 22H2 charts show $SI Creation INHERITED here but set to move time via CLI -- the only cell where mechanism changes the answer.
+  file   : V:\case_3f9ebb62bf3e\create_LongEnoughToForceShortName_a338d028.txt
+  dest   : W:\case_52d5418779af
+  ACTION : Ctrl+X on the file, then Ctrl+V in the DESTINATION folder on the OTHER volume.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): "W:\case_52d5418779af\create_LongEnoughToForceShortName_a338d028.txt"
+
+  recorded: 22:51:58.945 -> 22:52:47.276 UTC
+------------------------------------------------------------------------------
+CASE 08_file_move_volume_explorer_dragshift
+  why    : Cross-volume drag defaults to COPY; Shift forces a move. Does it match cut/paste?
+  file   : V:\case_95d4e2a36ec2\create_LongEnoughToForceShortName_cbd21b0b.txt
+  dest   : W:\case_246414644f86
+  ACTION : Hold SHIFT and DRAG the file to the DESTINATION folder on the OTHER volume (Shift forces a move).
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): "W:\case_246414644f86\create_LongEnoughToForceShortName_cbd21b0b.txt"
+
+  recorded: 22:54:58.983 -> 22:55:47.490 UTC
+------------------------------------------------------------------------------
+CASE 09_file_copy_explorer_dragcrossvol
+  why    : Cross-volume drag is a copy. Does it match a same-volume copy?
+  file   : V:\case_6545b16832b7\create_LongEnoughToForceShortName_680552b3.txt
+  dest   : W:\case_26929ba91360
+  ACTION : DRAG the file to the DESTINATION folder on the OTHER volume, WITHOUT Shift. This copies.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): "W:\case_26929ba91360\create_LongEnoughToForceShortName_680552b3.txt"
+
+  recorded: 22:58:37.285 -> 22:59:06.912 UTC
+------------------------------------------------------------------------------
+CASE 10_file_delete_explorer_recycle
+  why    : Recycle is a move into $Recycle.Bin plus a rename to $R... -- NOT the same as shift+delete.
+  file   : V:\case_0b447454fbdf\create_LongEnoughToForceShortName_8f99137c.txt
+  ACTION : Press DELETE (not Shift+Delete). The file goes to the Recycle Bin.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): gone
+  recorded: 23:00:51.884 -> 23:01:12.800 UTC
+------------------------------------------------------------------------------
+CASE 11_file_delete_explorer_shiftdelete
+  why    : Should match the CLI delete rules.
+  file   : V:\case_98d6f0ec33dc\create_LongEnoughToForceShortName_6fe22744.txt
+  ACTION : Press SHIFT+DELETE and confirm. Permanent delete.
+
+  Enter to START (or 's' to skip):
+  ...perform the action now, then press Enter:
+  Full path of the file now (Enter if unchanged, 'gone' if deleted): gone
+  recorded: 23:01:55.108 -> 23:02:36.922 UTC
+
+=== PHASE 4: after snapshots ===
+  V:  MFTECmd=106 Velociraptor=106 mft_dump=104
+  W:  MFTECmd=50 Velociraptor=50 mft_dump=47
+
+Complete: 11 performed, 0 skipped
+  C:\NtfsTest\run\explorer02\run.json
+
+Next:
+  .\harness\Compare-Results.ps1 -RunJson 'C:\NtfsTest\run\explorer02\run.json'
+
+
+RunLabel  : explorer02
+RunDir    : C:\NtfsTest\run\explorer02
+JsonPath  : C:\NtfsTest\run\explorer02\run.json
+Performed : 11
+Skipped   : 0
+
+
+
+PS C:\NtfsTest\repo>

@@ -1,0 +1,37 @@
+attribute,operation,operation_id,mechanism,timestamp,expected,note
+FN,File Creation,file_create,any,Modified,OP_TIME,
+FN,File Creation,file_create,any,Access,OP_TIME,
+FN,File Creation,file_create,any,MftEntryModified,OP_TIME,
+FN,File Creation,file_create,any,Creation,OP_TIME,
+FN,File Access,file_access,any,Modified,NO_CHANGE,
+FN,File Access,file_access,any,Access,NO_CHANGE,
+FN,File Access,file_access,any,MftEntryModified,NO_CHANGE,
+FN,File Access,file_access,any,Creation,NO_CHANGE,
+FN,File Modification,file_modify,any,Modified,NO_CHANGE,
+FN,File Modification,file_modify,any,Access,NO_CHANGE,
+FN,File Modification,file_modify,any,MftEntryModified,NO_CHANGE,
+FN,File Modification,file_modify,any,Creation,NO_CHANGE,
+FN,File Rename,file_rename,any,Modified,PREV_SI_MODIFIED,requires_timestomp
+FN,File Rename,file_rename,any,Access,PREV_SI_ACCESS,requires_timestomp
+FN,File Rename,file_rename,any,MftEntryModified,PREV_SI_ENTRYMOD,requires_timestomp
+FN,File Rename,file_rename,any,Creation,UNRESOLVED,hypothesis=PREV_SI_CREATION|chart_says_NO_CHANGE|requires_timestomp
+FN,File Copy (new file),file_copy,any,Modified,OP_TIME,
+FN,File Copy (new file),file_copy,any,Access,OP_TIME,
+FN,File Copy (new file),file_copy,any,MftEntryModified,OP_TIME,
+FN,File Copy (new file),file_copy,any,Creation,OP_TIME,
+FN,Local File Move,file_move_local,any,Modified,PREV_SI_MODIFIED,requires_timestomp
+FN,Local File Move,file_move_local,any,Access,PREV_SI_ACCESS,requires_timestomp
+FN,Local File Move,file_move_local,any,MftEntryModified,PREV_SI_ENTRYMOD,requires_timestomp
+FN,Local File Move,file_move_local,any,Creation,UNRESOLVED,hypothesis=PREV_SI_CREATION|chart_says_NO_CHANGE|requires_timestomp
+FN,Volume File Move,file_move_volume,cli,Modified,OP_TIME,
+FN,Volume File Move,file_move_volume,cli,Access,OP_TIME,
+FN,Volume File Move,file_move_volume,cli,MftEntryModified,OP_TIME,
+FN,Volume File Move,file_move_volume,cli,Creation,OP_TIME,
+FN,Volume File Move,file_move_volume,explorer_cutpaste,Modified,OP_TIME,
+FN,Volume File Move,file_move_volume,explorer_cutpaste,Access,OP_TIME,
+FN,Volume File Move,file_move_volume,explorer_cutpaste,MftEntryModified,OP_TIME,
+FN,Volume File Move,file_move_volume,explorer_cutpaste,Creation,OP_TIME,
+FN,File Deletion (shift+delete),file_delete,shift_delete,Modified,NO_CHANGE,
+FN,File Deletion (shift+delete),file_delete,shift_delete,Access,NO_CHANGE,
+FN,File Deletion (shift+delete),file_delete,shift_delete,MftEntryModified,NO_CHANGE,
+FN,File Deletion (shift+delete),file_delete,shift_delete,Creation,NO_CHANGE,

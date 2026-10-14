@@ -1,0 +1,75 @@
+{
+  "description": "Pinned third-party parser builds. A hash change invalidates comparison with previously published results.",
+  "tools": [
+    {
+      "name": "MFTECmd",
+      "version": "net9",
+      "url": "https://download.ericzimmermanstools.com/net9/MFTECmd.zip",
+      "file": "MFTECmd.zip",
+      "sha256": "60AE857A554B830243E38E91FAFDFDF6066F31C703282C5C6F40DAF3B64D3160",
+      "size_bytes": 2841312,
+      "retrieved": "2026-10-01T01:18:36.4675194Z",
+      "note": "Eric Zimmerman. Framework-dependent .NET 9 build; guest needs the .NET 9 Desktop Runtime."
+    },
+    {
+      "name": "SleuthKit",
+      "version": "4.15.0",
+      "url": "https://github.com/sleuthkit/sleuthkit/releases/download/sleuthkit-4.15.0/sleuthkit-4.15.0-win32.zip",
+      "file": "sleuthkit-4.15.0-win32.zip",
+      "sha256": "C2EBAB8105B893D97BD8CE35B88E01985E2A106EFC97F03ADF95840A631B20CE",
+      "size_bytes": 17728689,
+      "retrieved": "2026-10-01T01:18:38.8479152Z",
+      "note": "Volume/disk-level parsing (istat, fls, mmls). Cannot parse a standalone $MFT file. A detached .asc signature is published alongside."
+    },
+    {
+      "name": "Mft2Csv",
+      "version": "v2.0.0.51",
+      "url": "https://github.com/jschicht/Mft2Csv/releases/download/v2.0.0.51/Mft2Csv_v2.0.0.51.zip",
+      "file": "Mft2Csv_v2.0.0.51.zip",
+      "sha256": "930EE52B1FD9EB23C6044A9B2448A9752189797587E74264165A107B586780FE",
+      "size_bytes": 1094603,
+      "retrieved": "2026-10-01T01:18:39.2677639Z",
+      "note": "Joakim Schicht. GUI-driven: no documented CLI, so it is NOT part of the automated pipeline. Used as a MANUAL SPOT-CHECK on a sample of records per run, recorded in the run notes."
+    },
+    {
+      "name": "Velociraptor",
+      "version": "v0.77.2",
+      "url": "https://github.com/Velocidex/velociraptor/releases/download/v0.77.2/velociraptor-v0.77.2-windows-amd64.exe",
+      "file": "velociraptor.exe",
+      "sha256": "686E4F5888FDD66D07ACE3B6C1CBD7D2DD0D8D5FB4D3B5D905A7DF3341DFB86F",
+      "size_bytes": 70499832,
+      "retrieved": "2026-10-01T01:18:46.3302206Z",
+      "note": "Go. Automated second opinion covering all 8 timestamps via VQL parse_mft(). Single static binary, no runtime dependency. A detached .sig is published alongside."
+    },
+    {
+      "name": "DotNetRuntime9",
+      "version": "9.0-latest",
+      "url": "https://aka.ms/dotnet/9.0/dotnet-runtime-win-x64.exe",
+      "file": "dotnet-runtime-9-win-x64.exe",
+      "sha256": "6ECB0EB560DDB25C9318D28CEFBA06C752F395BB9BE03EF78F6F4DBFF58F3249",
+      "size_bytes": 29807224,
+      "retrieved": "2026-10-01T01:18:47.1401766Z",
+      "note": "MFTECmd is a framework-dependent net9.0 build requiring Microsoft.NETCore.App 9.0. The guest has no internet, so the runtime is staged from the host. Silent install: /install /quiet /norestart"
+    },
+    {
+      "name": "VCRedist2015_2022",
+      "version": "17-latest",
+      "url": "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+      "file": "vc_redist.x64.exe",
+      "sha256": "CC0FF0EB1DC3F5188AE6300FAEF32BF5BEEBA4BDD6E8E445A9184072096B713B",
+      "size_bytes": 25635768,
+      "retrieved": "2026-10-01T01:18:47.7239320Z",
+      "note": "mft_dump is a Rust x86_64-pc-windows-msvc build and needs vcruntime140.dll, which is absent on a clean Windows install. Without it the process exits 0xC0000135 (STATUS_DLL_NOT_FOUND) with no message. Silent install: /install /quiet /norestart"
+    },
+    {
+      "name": "mft_dump",
+      "version": "v0.7.0",
+      "url": "https://github.com/omerbenamram/mft/releases/download/v0.7.0/mft_dump-v0.7.0-x86_64-pc-windows-msvc.exe",
+      "file": "mft_dump.exe",
+      "sha256": "CAD73925B50784DBCCAB5AD3BBB611998DB91F409C079ACF4BF10A7C010A0A91",
+      "size_bytes": 1255936,
+      "retrieved": "2026-10-01T01:18:48.1780589Z",
+      "note": "Rust. Single static binary, no runtime dependency; used for automated re-verification of archived $MFT files."
+    }
+  ]
+}

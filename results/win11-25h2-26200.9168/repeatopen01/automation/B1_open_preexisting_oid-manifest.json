@@ -1,0 +1,17 @@
+﻿{
+    "RunLabel":  "repeatopen01",
+    "ResultFile":  "C:\\NtfsTest\\run\\repeatopen01\\automation\\B1_open_preexisting_oid-result.json",
+    "LogFile":  "C:\\NtfsTest\\run\\repeatopen01\\automation\\B1_open_preexisting_oid-driver.log",
+    "CaseGapSeconds":  0,
+    "RenameBase":  "unused",
+    "Cases":  [
+                  {
+                      "CaseId":  "B1_open_preexisting_oid",
+                      "Operation":  "file_access",
+                      "Mechanism":  "explorer_open",
+                      "SourcePath":  "V:\\repeatopen_106cac604c33\\repeatopen_B_c7581a15.txt",
+                      "SourceName":  "repeatopen_B_c7581a15.txt",
+                      "DestDir":  null
+                  }
+              ]
+}

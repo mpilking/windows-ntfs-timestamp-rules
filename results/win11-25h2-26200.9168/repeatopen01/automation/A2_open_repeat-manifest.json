@@ -1,0 +1,17 @@
+﻿{
+    "RunLabel":  "repeatopen01",
+    "ResultFile":  "C:\\NtfsTest\\run\\repeatopen01\\automation\\A2_open_repeat-result.json",
+    "LogFile":  "C:\\NtfsTest\\run\\repeatopen01\\automation\\A2_open_repeat-driver.log",
+    "CaseGapSeconds":  0,
+    "RenameBase":  "unused",
+    "Cases":  [
+                  {
+                      "CaseId":  "A2_open_repeat",
+                      "Operation":  "file_access",
+                      "Mechanism":  "explorer_open",
+                      "SourcePath":  "V:\\repeatopen_106cac604c33\\repeatopen_A_c7581a15.txt",
+                      "SourceName":  "repeatopen_A_c7581a15.txt",
+                      "DestDir":  null
+                  }
+              ]
+}

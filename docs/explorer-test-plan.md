@@ -222,6 +222,6 @@ Measured on Win11 25H2 build 26200.9168, identical across two passes. A reproduc
 
 **Volume move Metadata is `op time`** — here the CLI is the outlier, inheriting it instead. So the two mechanisms differ on *two* cells, in opposite directions.
 
-**Open updates Metadata; a programmatic read does not.** That is the shell giving the file an object ID for its Recent Items shortcut, not NTFS. Explorer also adds object IDs on rename and moves; see `findings.md` §7.
+**Open updates Metadata; a programmatic read does not.** That is the shell giving the file an object ID for its Recent Items shortcut, not NTFS, so it happens only when the file has none yet. The staged files never do; opening one a second time changes Access alone. Explorer also adds object IDs on rename and moves; see `findings.md` §7.
 
 Everything else matches the CLI measurements, including Access remaining unchanged on rename and local move — confirming that change is mechanism-independent.

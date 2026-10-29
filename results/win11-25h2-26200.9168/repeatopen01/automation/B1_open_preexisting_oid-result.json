@@ -1,0 +1,42 @@
+﻿{
+    "Context":  {
+                    "User":  "WIN11\\<harness-user>",
+                    "SessionId":  2,
+                    "Elevated":  true,
+                    "DpiAwareness":  "per-monitor-v2",
+                    "SystemDpi":  96,
+                    "VirtualScreen":  "0,0 1280x800",
+                    "WorkArea":  "0,0 1280x752",
+                    "ExtensionsShown":  true,
+                    "DoubleClickMs":  500,
+                    "CaseGapSeconds":  0
+                },
+    "StartedUtc":  "2026-10-29T18:03:46.7503186Z",
+    "CompletedUtc":  "2026-10-29T18:03:52.1293763Z",
+    "Cases":  [
+                  {
+                      "CaseId":  "B1_open_preexisting_oid",
+                      "OpStartUtc":  "2026-10-29T18:03:49.2287059Z",
+                      "OpEndUtc":  "2026-10-29T18:03:51.9909055Z",
+                      "PathAfter":  "V:\\repeatopen_106cac604c33\\repeatopen_B_c7581a15.txt",
+                      "NameAfter":  "repeatopen_B_c7581a15.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-29T18:01:59.8150155Z",
+                                     "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                     "Access":  "2026-10-29T18:03:50.0246734Z",
+                                     "EntryModified":  "2026-10-29T18:02:19.9034340Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "18:03:47.488 opened V:\\repeatopen_106cac604c33 as window 0x2708d4",
+                                    "18:03:48.348 item \u0027repeatopen_B_c7581a15.txt\u0027 at 182,195 598x24, target (264,208)",
+                                    "18:03:49.230 START",
+                                    "18:03:49.753 double-click (264,208) open repeatopen_B_c7581a15.txt; cursor now (264,208)",
+                                    "18:03:50.193 opened in \u0027repeatopen_B_c7581a15.txt - Notepad\u0027 [Notepad]",
+                                    "18:03:51.973 editor closed confirmed",
+                                    "18:03:51.990 END"
+                                ]
+                  }
+              ]
+}

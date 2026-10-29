@@ -240,7 +240,7 @@ Explorer cut/paste and Shift+drag produce identical results. Cross-volume drag w
 | Case | Result |
 |---|---|
 | **Browse / select** in Explorer | **Nothing changes.** All eight timestamps unmoved. "Accessed" means opened, not listed. |
-| **Open** from Explorer (Notepad) | Access **and Metadata** update. A programmatic read leaves Metadata alone. The Metadata change comes from the shell, not from NTFS or Notepad ([below](#why-explorer-changes-entry-modified-object-ids)). |
+| **Open** from Explorer (Notepad) | Access updates. **Metadata** updates too if the file has no object ID yet, usually the first time Explorer handles it. A programmatic read leaves Metadata alone. The Metadata change comes from the shell, not from NTFS or Notepad ([below](#why-explorer-changes-entry-modified-object-ids)). |
 | **Recycle Bin delete** | Updates **Metadata** only, like a local move — it *is* a move into `$Recycle.Bin` plus a rename to `$R…`. |
 | **Shift+delete** | Every timestamp unchanged. Matches the CLI delete rules. |
 
@@ -248,7 +248,7 @@ If Metadata moved at deletion time, the file went to the Recycle Bin rather than
 
 ### Why Explorer changes Entry Modified: object IDs
 
-Opening a file from Explorer changes `$SI` Entry Modified although Notepad only reads the file. The change comes from the shell's link tracking:
+Opening a file from Explorer can change `$SI` Entry Modified, although Notepad only reads the file. The change comes from the shell's link tracking, and happens only if the file has no object ID yet:
 
 1. Explorer adds the file to Recent Items by creating a shortcut in `%APPDATA%\Microsoft\Windows\Recent`.
 2. The shortcut's link-tracking block identifies the target by its NTFS object ID, so that the shortcut can still find the file after a rename or move. A file without an object ID is given one, which adds an `$OBJECT_ID` attribute to its MFT record.
@@ -262,6 +262,16 @@ Measured in `explorerauto01`, case 02:
 | 16:01:10.767 | The Recent shortcut for the file is created. Its link-tracking block holds the same object ID. |
 | 16:01:11.084 | Access changes as Notepad reads the file. |
 
+**Only when the file has no object ID yet.** `repeatopen01` (`harness/Invoke-RepeatOpen.ps1`) opened one file twice, 30 s apart, and opened a second file that had been given an object ID beforehand with `fsutil objectid create`. The automated driver performed each open:
+
+| Open | Object ID before the open | Entry Modified | Access |
+|---|---|---|---|
+| File A, first open | none | **changes** (object ID added) | changes |
+| File A, repeat open | from the first open | unchanged | changes |
+| File B, first open | from `fsutil` | unchanged | changes |
+
+Once a file has an object ID, from Explorer or from anything else, opening it from Explorer changes Access alone, as a programmatic read does. That is typically after the first time Explorer opens, renames or moves the file, whatever the file's age. Creating File B's object ID with `fsutil` changed its Entry Modified as well, so adding an object ID by any means changes the record. The live reads and the parsed `$MFT` agree to the tick. The repeat open did not rewrite File A's Recent shortcut. The first open also gave the containing folder an object ID, changing the folder's Entry Modified, because Recent Items keeps a shortcut to the folder too.
+
 Explorer adds object IDs on more than "open". The same files gained one in all three passes:
 
 | Gains an object ID | Does not |
@@ -274,6 +284,7 @@ Only "open" creates a Recent shortcut, so for rename and moves the object ID com
 
 **Forensic reading.**
 
+- An Explorer open changes Entry Modified only once, when the file first gets an object ID. Later opens change Access alone, so Entry Modified does not show the most recent open.
 - An `$OBJECT_ID` on a file is consistent with Explorer having opened, renamed or moved it. Its absence proves nothing: copies, deletes and command-line operations do not add one. Other software can add one too.
 - A Recent shortcut's link-tracking block names the target's object ID, so it identifies the file even after a rename or move.
 - The object ID is a version-1 GUID, but its embedded timestamp does not date the assignment. In these runs, the IDs assigned in one session shared a base time 8 hours to 5 days before the operations, and increased in the order they were assigned. Its last 12 hex digits are a network adapter's MAC address, here the VM's.

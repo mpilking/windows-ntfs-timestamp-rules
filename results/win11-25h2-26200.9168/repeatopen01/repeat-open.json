@@ -1,0 +1,169 @@
+﻿{
+    "Label":  "repeatopen01",
+    "ConsoleUser":  "WIN11\\<harness-user>",
+    "CaseDir":  "V:\\repeatopen_106cac604c33",
+    "FileA":  "V:\\repeatopen_106cac604c33\\repeatopen_A_c7581a15.txt",
+    "FileB":  "V:\\repeatopen_106cac604c33\\repeatopen_B_c7581a15.txt",
+    "Build":  "26200.9168",
+    "ObjectIdCreateB":  "Object ID :        5242f904f6cff1118cee000c296f03cc\r\nBirthVolume ID :   00000000000000000000000000000000\r\nBirthObjectId ID : 5242f904f6cff1118cee000c296f03cc\r\nDomain ID :        00000000000000000000000000000000",
+    "Steps":  [
+                  {
+                      "CaseId":  "A1_open_first",
+                      "File":  "V:\\repeatopen_106cac604c33\\repeatopen_A_c7581a15.txt",
+                      "OpStartUtc":  "2026-10-29T18:02:49.7158965Z",
+                      "OpEndUtc":  "2026-10-29T18:02:52.7521189Z",
+                      "DriverLiveSI":  {
+                                           "Created":  "2026-10-29T18:01:59.8150155Z",
+                                           "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                           "Access":  "2026-10-29T18:02:50.6283502Z",
+                                           "EntryModified":  "2026-10-29T18:02:50.2599461Z"
+                                       },
+                      "DriverSteps":  [
+                                          "18:02:47.804 opened V:\\repeatopen_106cac604c33 as window 0x4506f8",
+                                          "18:02:48.811 item \u0027repeatopen_A_c7581a15.txt\u0027 at 182,167 598x24, target (264,180)",
+                                          "18:02:49.715 START",
+                                          "18:02:50.210 double-click (264,180) open repeatopen_A_c7581a15.txt; cursor now (264,180)",
+                                          "18:02:50.877 opened in \u0027repeatopen_A_c7581a15.txt - Notepad\u0027 [Notepad]",
+                                          "18:02:52.738 editor closed confirmed",
+                                          "18:02:52.752 END"
+                                      ],
+                      "Before":  {
+                                     "ReadUtc":  "2026-10-29T18:02:45.3378637Z",
+                                     "Created":  "2026-10-29T18:01:59.8150155Z",
+                                     "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                     "Access":  "2026-10-29T18:01:59.8150155Z",
+                                     "EntryModified":  "2026-10-29T18:01:59.8150155Z",
+                                     "ObjectId":  null,
+                                     "RecentLnk":  null
+                                 },
+                      "After":  {
+                                    "ReadUtc":  "2026-10-29T18:02:56.9014633Z",
+                                    "Created":  "2026-10-29T18:01:59.8150155Z",
+                                    "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                    "Access":  "2026-10-29T18:02:50.6283502Z",
+                                    "EntryModified":  "2026-10-29T18:02:50.2599461Z",
+                                    "ObjectId":  "6642f904f6cff1118cee000c296f03cc",
+                                    "RecentLnk":  {
+                                                      "Created":  "2026-10-29T18:02:50.4034500Z",
+                                                      "Written":  "2026-10-29T18:02:50.4034500Z",
+                                                      "HoldsObjectId":  true
+                                                  }
+                                }
+                  },
+                  {
+                      "CaseId":  "A2_open_repeat",
+                      "File":  "V:\\repeatopen_106cac604c33\\repeatopen_A_c7581a15.txt",
+                      "OpStartUtc":  "2026-10-29T18:03:20.2680289Z",
+                      "OpEndUtc":  "2026-10-29T18:03:22.9032376Z",
+                      "DriverLiveSI":  {
+                                           "Created":  "2026-10-29T18:01:59.8150155Z",
+                                           "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                           "Access":  "2026-10-29T18:03:21.0061732Z",
+                                           "EntryModified":  "2026-10-29T18:02:50.2599461Z"
+                                       },
+                      "DriverSteps":  [
+                                          "18:03:18.483 opened V:\\repeatopen_106cac604c33 as window 0x3e072e",
+                                          "18:03:19.365 item \u0027repeatopen_A_c7581a15.txt\u0027 at 182,167 598x24, target (264,180)",
+                                          "18:03:20.268 START",
+                                          "18:03:20.734 double-click (264,180) open repeatopen_A_c7581a15.txt; cursor now (264,180)",
+                                          "18:03:21.176 opened in \u0027repeatopen_A_c7581a15.txt - Notepad\u0027 [Notepad]",
+                                          "18:03:22.894 editor closed confirmed",
+                                          "18:03:22.903 END"
+                                      ],
+                      "Before":  {
+                                     "ReadUtc":  "2026-10-29T18:03:16.9506846Z",
+                                     "Created":  "2026-10-29T18:01:59.8150155Z",
+                                     "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                     "Access":  "2026-10-29T18:02:50.6283502Z",
+                                     "EntryModified":  "2026-10-29T18:02:50.2599461Z",
+                                     "ObjectId":  "6642f904f6cff1118cee000c296f03cc",
+                                     "RecentLnk":  {
+                                                       "Created":  "2026-10-29T18:02:50.4034500Z",
+                                                       "Written":  "2026-10-29T18:02:50.4034500Z",
+                                                       "HoldsObjectId":  true
+                                                   }
+                                 },
+                      "After":  {
+                                    "ReadUtc":  "2026-10-29T18:03:25.8609562Z",
+                                    "Created":  "2026-10-29T18:01:59.8150155Z",
+                                    "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                    "Access":  "2026-10-29T18:03:21.0061732Z",
+                                    "EntryModified":  "2026-10-29T18:02:50.2599461Z",
+                                    "ObjectId":  "6642f904f6cff1118cee000c296f03cc",
+                                    "RecentLnk":  {
+                                                      "Created":  "2026-10-29T18:02:50.4034500Z",
+                                                      "Written":  "2026-10-29T18:02:50.4034500Z",
+                                                      "HoldsObjectId":  true
+                                                  }
+                                }
+                  },
+                  {
+                      "CaseId":  "B1_open_preexisting_oid",
+                      "File":  "V:\\repeatopen_106cac604c33\\repeatopen_B_c7581a15.txt",
+                      "OpStartUtc":  "2026-10-29T18:03:49.2287059Z",
+                      "OpEndUtc":  "2026-10-29T18:03:51.9909055Z",
+                      "DriverLiveSI":  {
+                                           "Created":  "2026-10-29T18:01:59.8150155Z",
+                                           "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                           "Access":  "2026-10-29T18:03:50.0246734Z",
+                                           "EntryModified":  "2026-10-29T18:02:19.9034340Z"
+                                       },
+                      "DriverSteps":  [
+                                          "18:03:47.488 opened V:\\repeatopen_106cac604c33 as window 0x2708d4",
+                                          "18:03:48.348 item \u0027repeatopen_B_c7581a15.txt\u0027 at 182,195 598x24, target (264,208)",
+                                          "18:03:49.230 START",
+                                          "18:03:49.753 double-click (264,208) open repeatopen_B_c7581a15.txt; cursor now (264,208)",
+                                          "18:03:50.193 opened in \u0027repeatopen_B_c7581a15.txt - Notepad\u0027 [Notepad]",
+                                          "18:03:51.973 editor closed confirmed",
+                                          "18:03:51.990 END"
+                                      ],
+                      "Before":  {
+                                     "ReadUtc":  "2026-10-29T18:03:45.9425038Z",
+                                     "Created":  "2026-10-29T18:01:59.8150155Z",
+                                     "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                     "Access":  "2026-10-29T18:01:59.8150155Z",
+                                     "EntryModified":  "2026-10-29T18:02:19.9034340Z",
+                                     "ObjectId":  "5242f904f6cff1118cee000c296f03cc",
+                                     "RecentLnk":  null
+                                 },
+                      "After":  {
+                                    "ReadUtc":  "2026-10-29T18:03:54.8389236Z",
+                                    "Created":  "2026-10-29T18:01:59.8150155Z",
+                                    "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                    "Access":  "2026-10-29T18:03:50.0246734Z",
+                                    "EntryModified":  "2026-10-29T18:02:19.9034340Z",
+                                    "ObjectId":  "5242f904f6cff1118cee000c296f03cc",
+                                    "RecentLnk":  {
+                                                      "Created":  "2026-10-29T18:03:49.8758225Z",
+                                                      "Written":  "2026-10-29T18:03:49.8758225Z",
+                                                      "HoldsObjectId":  true
+                                                  }
+                                }
+                  }
+              ],
+    "Raw":  [
+                {
+                    "Name":  "after_V-mft.bin",
+                    "Sha256":  "17C1DBF925219910494070D992D84EE6141E72B644F24321719F0B36EA4FC113"
+                },
+                {
+                    "Name":  "before_V-mft.bin",
+                    "Sha256":  "BA8A8089688FCE125A0F68A433C88198363F1E40EABD7BC745F7D5AF148DF54E"
+                }
+            ],
+    "Log":  [
+                "18:01:59.819  staged V:\\repeatopen_106cac604c33\\repeatopen_A_c7581a15.txt, V:\\repeatopen_106cac604c33\\repeatopen_B_c7581a15.txt",
+                "18:02:19.957  fsutil objectid create B: 5242f904f6cff1118cee000c296f03cc",
+                "18:02:40.212  before snapshot taken",
+                "18:02:45.344  A1_open_first before: EM 2026-10-29T18:01:59.8150155Z  Access 2026-10-29T18:01:59.8150155Z  OID ",
+                "18:02:56.906  A1_open_first window 2026-10-29T18:02:49.7158965Z -\u003e 2026-10-29T18:02:52.7521189Z",
+                "18:02:56.906  A1_open_first after:  EM 2026-10-29T18:02:50.2599461Z  Access 2026-10-29T18:02:50.6283502Z  OID 6642f904f6cff1118cee000c296f03cc  lnk {\"Created\":\"2026-10-29T18:02:50.4034500Z\",\"Written\":\"2026-10-29T18:02:50.4034500Z\",\"HoldsObjectId\":true}",
+                "18:03:16.950  A2_open_repeat before: EM 2026-10-29T18:02:50.2599461Z  Access 2026-10-29T18:02:50.6283502Z  OID 6642f904f6cff1118cee000c296f03cc",
+                "18:03:25.860  A2_open_repeat window 2026-10-29T18:03:20.2680289Z -\u003e 2026-10-29T18:03:22.9032376Z",
+                "18:03:25.862  A2_open_repeat after:  EM 2026-10-29T18:02:50.2599461Z  Access 2026-10-29T18:03:21.0061732Z  OID 6642f904f6cff1118cee000c296f03cc  lnk {\"Created\":\"2026-10-29T18:02:50.4034500Z\",\"Written\":\"2026-10-29T18:02:50.4034500Z\",\"HoldsObjectId\":true}",
+                "18:03:45.942  B1_open_preexisting_oid before: EM 2026-10-29T18:02:19.9034340Z  Access 2026-10-29T18:01:59.8150155Z  OID 5242f904f6cff1118cee000c296f03cc",
+                "18:03:54.838  B1_open_preexisting_oid window 2026-10-29T18:03:49.2287059Z -\u003e 2026-10-29T18:03:51.9909055Z",
+                "18:03:54.838  B1_open_preexisting_oid after:  EM 2026-10-29T18:02:19.9034340Z  Access 2026-10-29T18:03:50.0246734Z  OID 5242f904f6cff1118cee000c296f03cc  lnk {\"Created\":\"2026-10-29T18:03:49.8758225Z\",\"Written\":\"2026-10-29T18:03:49.8758225Z\",\"HoldsObjectId\":true}",
+                "18:04:15.038  after snapshot taken"
+            ]
+}

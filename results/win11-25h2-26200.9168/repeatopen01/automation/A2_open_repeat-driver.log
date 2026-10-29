@@ -1,0 +1,11 @@
+18:03:17.385  driver started: pid 10484, session 2, user WIN11\<harness-user>
+18:03:17.717  context: {"User":"WIN11\\<harness-user>","SessionId":2,"Elevated":true,"DpiAwareness":"per-monitor-v2","SystemDpi":96,"VirtualScreen":"0,0 1280x800","WorkArea":"0,0 1280x752","ExtensionsShown":true,"DoubleClickMs":500,"CaseGapSeconds":0}
+18:03:17.743  CASE A2_open_repeat
+18:03:18.491      opened V:\repeatopen_106cac604c33 as window 0x3e072e
+18:03:19.365      item 'repeatopen_A_c7581a15.txt' at 182,167 598x24, target (264,180)
+18:03:20.270      START
+18:03:20.734      double-click (264,180) open repeatopen_A_c7581a15.txt; cursor now (264,180)
+18:03:21.180      opened in 'repeatopen_A_c7581a15.txt - Notepad' [Notepad]
+18:03:22.894      editor closed confirmed
+18:03:22.903      END
+18:03:23.119  driver finished: 1 performed, 0 failed

@@ -1,0 +1,42 @@
+﻿{
+    "Context":  {
+                    "User":  "WIN11\\<harness-user>",
+                    "SessionId":  2,
+                    "Elevated":  true,
+                    "DpiAwareness":  "per-monitor-v2",
+                    "SystemDpi":  96,
+                    "VirtualScreen":  "0,0 1280x800",
+                    "WorkArea":  "0,0 1280x752",
+                    "ExtensionsShown":  true,
+                    "DoubleClickMs":  500,
+                    "CaseGapSeconds":  0
+                },
+    "StartedUtc":  "2026-10-29T18:02:46.8322552Z",
+    "CompletedUtc":  "2026-10-29T18:02:52.9290472Z",
+    "Cases":  [
+                  {
+                      "CaseId":  "A1_open_first",
+                      "OpStartUtc":  "2026-10-29T18:02:49.7158965Z",
+                      "OpEndUtc":  "2026-10-29T18:02:52.7521189Z",
+                      "PathAfter":  "V:\\repeatopen_106cac604c33\\repeatopen_A_c7581a15.txt",
+                      "NameAfter":  "repeatopen_A_c7581a15.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-29T18:01:59.8150155Z",
+                                     "Modified":  "2026-10-29T18:01:59.8150155Z",
+                                     "Access":  "2026-10-29T18:02:50.6283502Z",
+                                     "EntryModified":  "2026-10-29T18:02:50.2599461Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "18:02:47.804 opened V:\\repeatopen_106cac604c33 as window 0x4506f8",
+                                    "18:02:48.811 item \u0027repeatopen_A_c7581a15.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "18:02:49.715 START",
+                                    "18:02:50.210 double-click (264,180) open repeatopen_A_c7581a15.txt; cursor now (264,180)",
+                                    "18:02:50.877 opened in \u0027repeatopen_A_c7581a15.txt - Notepad\u0027 [Notepad]",
+                                    "18:02:52.738 editor closed confirmed",
+                                    "18:02:52.752 END"
+                                ]
+                  }
+              ]
+}

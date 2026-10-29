@@ -86,18 +86,23 @@ deferred-write window has elapsed. Any value that moved between phase 4 and phas
 
 **Spacing must exceed twice the tolerance.** Otherwise a file's creation time falls inside its operation's comparison window, `NO_CHANGE` and `OP_TIME` become indistinguishable, and every cell reports as ambiguous for reasons unrelated to NTFS. `Compare-Results.ps1` warns when this is violated.
 
-## Explorer cases: performed by hand
+## Explorer cases
 
-Explorer operations cannot be scripted from the harness. They need an interactive desktop session, and both PowerShell Remoting and PowerShell Direct are non-interactive — shell automation does not work over either. The Explorer cases are therefore performed manually at the guest console, following [explorer-test-plan.md](explorer-test-plan.md).
+Explorer operations need an interactive desktop session, and both PowerShell Remoting and PowerShell Direct are non-interactive. The Explorer cases are therefore performed two ways, following [explorer-test-plan.md](explorer-test-plan.md):
 
-`Invoke-ExplorerTest.ps1` keeps everything else identical. It stages the cases, takes the before snapshots, prompts the operator before and after each action, then takes the after snapshots and writes the same `run.json` the automated runner produces — so `Compare-Results.ps1` and the report generator consume it unchanged. The only difference is that an Enter keypress brackets each operation instead of a script call, which keeps the measured window nearly as tight as a scripted run.
+- **By hand** at the guest console, at least twice. These manual passes are the reference.
+- **By an automated driver**, as an additional test. `Invoke-ExplorerTest.ps1 -Driver Automated`, run over Remoting, launches `Invoke-ExplorerDriver.ps1` in the logged-on user's desktop session through a scheduled task with an interactive token. The driver opens folder windows and locates files with Shell COM and UI Automation, then performs each operation with real mouse and keyboard input, so Explorer follows the same code path it does for a person. Every step verifies that it happened, and a case that cannot be verified is failed rather than classified.
+
+The two must agree cell for cell, and `Compare-Runs.ps1` lines them up. A disagreement is investigated, not averaged.
+
+`Invoke-ExplorerTest.ps1` keeps everything else identical for both. It stages the cases, takes the before snapshots, has each operation performed, then takes the after snapshots and writes the same `run.json` the automated runner produces — so `Compare-Results.ps1` and the report generator consume it unchanged. In a manual pass an Enter keypress brackets each operation. Those windows measured 7 to 86 seconds on 25H2, against 0.1 to 3.1 seconds for the driver. Despite that difference, the automated pass agreed with both manual passes on all 88 cells.
 
 Three constraints the plan enforces:
 
 - **Run on a non-indexed volume.** Windows Search updates `$SI` Access on files
 in indexed locations about a second after any change, which would be indistinguishable from an Explorer-caused update. `V:` and `W:` are outside the default crawl scope; `C:\Users\` is not.
 - **Record where the file ended up.** Explorer may rename or relocate it in
-ways the harness cannot predict, so the operator supplies the resulting path. Quotes from Explorer's "Copy as path" are stripped on input.
+ways the harness cannot predict, so the operator supplies the resulting path. Quotes from Explorer's "Copy as path" are stripped on input. The driver instead checks the path it expects, and identifies a recycled file's `$R…` name from its `$I` record.
 - **Resolve by entry number where the name is unpredictable.** A Recycle Bin
 delete moves the file into `$Recycle.Bin` *and* renames it to `$R…`, so the runner records each case's MFT entry number before the manual phase and the classifier falls back to it. That fallback is blocked for copy and cross-volume move, where the source record survives and would be matched instead of the result.
 

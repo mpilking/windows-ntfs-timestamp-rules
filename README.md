@@ -47,8 +47,10 @@ harness/
   Capture.psm1              $MFT extraction + multi-parser normalization
   Export-Mft.ps1            raw $MFT extraction with integrity gates
   Invoke-TimestampTest.ps1  the runner
-  Invoke-ExplorerTest.ps1   interactive runner for the Explorer (GUI) cases
+  Invoke-ExplorerTest.ps1   runner for the Explorer (GUI) cases, manual or automated
+  Invoke-ExplorerDriver.ps1 automated Explorer driver (real mouse/keyboard input)
   Compare-Results.ps1       classification + baseline diff
+  Compare-Runs.ps1          cell-by-cell comparison of repeated runs
   New-ResultsReport.ps1     publishable Markdown report
   Invoke-FullRun.ps1        one-command full pass
   Update-RunSnapshots.ps1   re-parse archived $MFT without re-running the tests
@@ -77,7 +79,7 @@ Read [docs/exceptions.md](docs/exceptions.md). The rules describe a specific tes
 
 ## Running the harness yourself
 
-Most visitors will only want to review the test results. To reproduce them, the recommended path is to build a test VM following [docs/setup-vmware.md](docs/setup-vmware.md) or [docs/setup-hyperv.md](docs/setup-hyperv.md), then run `harness/Invoke-FullRun.ps1`. The Explorer cases are performed by hand; see [docs/explorer-test-plan.md](docs/explorer-test-plan.md).
+Most visitors will only want to review the test results. To reproduce them, the recommended path is to build a test VM following [docs/setup-vmware.md](docs/setup-vmware.md) or [docs/setup-hyperv.md](docs/setup-hyperv.md), then run `harness/Invoke-FullRun.ps1`. The Explorer cases are performed by hand, with an additional automated pass compared against them; see [docs/explorer-test-plan.md](docs/explorer-test-plan.md).
 
 ## Third-party tools
 

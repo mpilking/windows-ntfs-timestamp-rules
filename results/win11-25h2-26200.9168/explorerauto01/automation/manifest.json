@@ -1,0 +1,97 @@
+﻿{
+    "RunLabel":  "explorerauto01",
+    "ResultFile":  "C:\\NtfsTest\\run\\explorerauto01\\automation\\driver-result.json",
+    "LogFile":  "C:\\NtfsTest\\run\\explorerauto01\\automation\\driver.log",
+    "CaseGapSeconds":  20,
+    "RenameBase":  "renamed_explorer_explorerauto01",
+    "Cases":  [
+                  {
+                      "CaseId":  "01_file_access_explorer_browse",
+                      "Operation":  "file_access",
+                      "Mechanism":  "explorer_browse",
+                      "SourcePath":  "V:\\case_130a4c26f7f7\\create_LongEnoughToForceShortName_2eb45670.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_2eb45670.txt",
+                      "DestDir":  null
+                  },
+                  {
+                      "CaseId":  "02_file_access_explorer_open",
+                      "Operation":  "file_access",
+                      "Mechanism":  "explorer_open",
+                      "SourcePath":  "V:\\case_93c4521e9e2a\\create_LongEnoughToForceShortName_495c81e0.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_495c81e0.txt",
+                      "DestDir":  null
+                  },
+                  {
+                      "CaseId":  "03_file_rename_explorer_rename",
+                      "Operation":  "file_rename",
+                      "Mechanism":  "explorer_rename",
+                      "SourcePath":  "V:\\case_8ab1279aaf49\\create_LongEnoughToForceShortName_6117951b.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_6117951b.txt",
+                      "DestDir":  null
+                  },
+                  {
+                      "CaseId":  "04_file_copy_explorer_copy",
+                      "Operation":  "file_copy",
+                      "Mechanism":  "explorer_copy",
+                      "SourcePath":  "V:\\case_434b06baab7e\\create_LongEnoughToForceShortName_dc39387f.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_dc39387f.txt",
+                      "DestDir":  "V:\\case_3ca0afa55de5"
+                  },
+                  {
+                      "CaseId":  "05_file_move_local_explorer_cutpaste",
+                      "Operation":  "file_move_local",
+                      "Mechanism":  "explorer_cutpaste",
+                      "SourcePath":  "V:\\case_032649b26627\\create_LongEnoughToForceShortName_f93772aa.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_f93772aa.txt",
+                      "DestDir":  "V:\\case_cb721e5c2e23"
+                  },
+                  {
+                      "CaseId":  "06_file_move_local_explorer_drag",
+                      "Operation":  "file_move_local",
+                      "Mechanism":  "explorer_drag",
+                      "SourcePath":  "V:\\case_73826fd34974\\create_LongEnoughToForceShortName_d192092b.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_d192092b.txt",
+                      "DestDir":  "V:\\case_4cd01dd3db8c"
+                  },
+                  {
+                      "CaseId":  "07_file_move_volume_explorer_cutpaste",
+                      "Operation":  "file_move_volume",
+                      "Mechanism":  "explorer_cutpaste",
+                      "SourcePath":  "V:\\case_e2855e1b1ef9\\create_LongEnoughToForceShortName_ecd5f053.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_ecd5f053.txt",
+                      "DestDir":  "W:\\case_d19a3880f920"
+                  },
+                  {
+                      "CaseId":  "08_file_move_volume_explorer_dragshift",
+                      "Operation":  "file_move_volume",
+                      "Mechanism":  "explorer_dragshift",
+                      "SourcePath":  "V:\\case_c017fbeaf6dc\\create_LongEnoughToForceShortName_9756cedc.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_9756cedc.txt",
+                      "DestDir":  "W:\\case_752a2959f481"
+                  },
+                  {
+                      "CaseId":  "09_file_copy_explorer_dragcrossvol",
+                      "Operation":  "file_copy",
+                      "Mechanism":  "explorer_dragcrossvol",
+                      "SourcePath":  "V:\\case_128aa554491c\\create_LongEnoughToForceShortName_55e0a193.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_55e0a193.txt",
+                      "DestDir":  "W:\\case_5c64e8ec4ddb"
+                  },
+                  {
+                      "CaseId":  "10_file_delete_explorer_recycle",
+                      "Operation":  "file_delete",
+                      "Mechanism":  "explorer_recycle",
+                      "SourcePath":  "V:\\case_1f7437f0be5b\\create_LongEnoughToForceShortName_db44a1ab.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_db44a1ab.txt",
+                      "DestDir":  null
+                  },
+                  {
+                      "CaseId":  "11_file_delete_explorer_shiftdelete",
+                      "Operation":  "file_delete",
+                      "Mechanism":  "explorer_shiftdelete",
+                      "SourcePath":  "V:\\case_4f791976561f\\create_LongEnoughToForceShortName_04b2a131.txt",
+                      "SourceName":  "create_LongEnoughToForceShortName_04b2a131.txt",
+                      "DestDir":  null
+                  }
+              ]
+}

@@ -1,8 +1,8 @@
 # Explorer Test Procedure
 
-Eleven cases must be performed by hand at the test system's desktop. Everything else in this study is automated; Explorer is not, because its operations need an interactive desktop session and both PowerShell Remoting and PowerShell Direct are non-interactive.
+Eleven cases are performed in Explorer at the test system's desktop: by hand, following this plan, and additionally by an automated driver (see [Automated pass](#automated-pass)). The manual passes are the reference; the automated pass is an extra test that must reproduce them. Explorer operations need an interactive desktop session, and both PowerShell Remoting and PowerShell Direct are non-interactive, so these cases sit outside the main automated runs.
 
-`harness\Invoke-ExplorerTest.ps1` handles staging, snapshots and capture. The operator does the clicking. It prompts before and after each action, so the measured window is nearly as tight as a scripted run, and it writes the same `run.json` the automated runner produces — `Compare-Results.ps1` consumes it unchanged.
+`harness\Invoke-ExplorerTest.ps1` handles staging, snapshots and capture. In a manual pass the operator does the clicking, and the script prompts before and after each action to bracket the measured window. It writes the same `run.json` the automated runner produces — `Compare-Results.ps1` consumes it unchanged.
 
 **Time:** about 30 minutes.
 
@@ -18,7 +18,7 @@ The remaining cases either confirm Explorer uses the same code path as the CLI e
 
 ## Before you start
 
-Work at the **guest console**, in an **elevated** PowerShell. Not over Remoting: the script refuses to run non-interactively, by design.
+Work at the **guest console**, in an **elevated** PowerShell. Not over Remoting: a manual pass refuses to run non-interactively, by design.
 
 ### Pre-flight
 
@@ -132,7 +132,11 @@ The script prints the exact command with the real label. Outputs to review:
 - `precision-analysis.csv`
 - `pending-writes.csv` — only written if a value had not reached disk
 
-A manual pass cannot be repeated cheaply. Ideally **run it twice** and compare the two passes cell-for-cell.
+A manual pass cannot be repeated cheaply. Ideally **run it twice** and compare the two passes cell-for-cell:
+
+```powershell
+.\harness\Compare-Runs.ps1 -RunDir C:\NtfsTest\run\explorer01, C:\NtfsTest\run\explorer02
+```
 
 ### What to record
 
@@ -144,6 +148,52 @@ The harness captures timestamps; it cannot capture what the operator saw. Operat
 4. Case 10 — the `$R…` name if visible.
 5. Anything unexpected — a slow operation, a lingering progress bar, a
 thumbnail regenerating. Explorer does background work and it can surface in the results.
+
+---
+
+## Automated pass
+
+An additional pass performs the same eleven cases with an automated driver instead of an operator. It does not replace the manual passes. It is compared against them, and the two should agree cell for cell; a disagreement is investigated, not averaged away.
+
+### How it works
+
+It runs from the host over PowerShell Remoting. `Invoke-ExplorerTest.ps1 -Driver Automated` stages and snapshots exactly as a manual pass does, then hands the operations to `harness\Invoke-ExplorerDriver.ps1`, started in the logged-on user's desktop session through a scheduled task with an interactive token. Remoting has no desktop, and a scheduled task is the way to reach one from it.
+
+The driver follows one rule: automation sets the stage, and the operation itself is real input. It opens and arranges the folder windows through the Shell COM interface and locates the file with UI Automation, which is the preparation an operator does before pressing Enter. Everything inside the measured window is a mouse click, a drag or a keystroke sent through `SendInput`, so Explorer runs the same code path it runs for a person. Performing the operations through Shell COM verbs (`CopyHere`, `MoveHere`) would be testing a different mechanism.
+
+Every step checks that it happened: the window opened, the file was drawn on screen, the point about to be clicked belongs to the expected window and file, the window had focus before a keystroke, and the file ended up where the case says. The drag cases check whether the file was moved or copied, which is the equivalent of reading the drag tooltip. A step that cannot be verified fails the case, which is then excluded from classification, and the driver saves a screenshot of the desktop for diagnosis.
+
+### Prerequisites
+
+The pre-flight above applies, run over Remoting. In addition:
+
+| Requirement | Why |
+|---|---|
+| The harness user is logged on at the console, desktop unlocked | The driver acts on that desktop. Disable the lock-screen timeout for the run. |
+| Nobody uses the console during the run | The driver is using the mouse and keyboard. |
+| File name extensions shown | Case 03, as for a manual pass. |
+
+The driver runs elevated. Windows silently discards injected input while a higher-integrity window has focus, and an elevated console is often left open on a test VM. The operations are unaffected: they are performed by the user's own unelevated `explorer.exe`, and Notepad, launched by Explorer for case 02, inherits that.
+
+### Running
+
+```powershell
+.\harness\Invoke-ExplorerTest.ps1 -Driver Automated -RunLabel 'explorerautoNN'
+```
+
+The driver's progress is relayed to the Remoting session. Its log, manifest, results and any failure screenshots are kept in the run's `automation\` folder, and each case in `run.json` records the steps the driver took.
+
+Classify the run as usual, then line it up against the manual passes:
+
+```powershell
+.\harness\Compare-Runs.ps1 -RunDir C:\NtfsTest\run\explorer01, C:\NtfsTest\run\explorer02, C:\NtfsTest\run\explorerautoNN
+```
+
+### Measured windows differ
+
+An operator's measured window is wide: 7 to 86 seconds across the two 25H2 manual passes. The driver's measured 0.1 to 3.1 seconds: under a second for a single click or keystroke, one to one and a half seconds for rename and copy or cut and paste, and about 3 seconds for a drag or for opening and closing Notepad. A write that lands a few seconds after an operation falls inside the first and possibly outside the second, so `Compare-Runs.ps1` lists window widths alongside any disagreement.
+
+On 25H2 the first automated pass (`explorerauto01`) agreed with both manual passes on all 88 cells.
 
 ---
 

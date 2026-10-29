@@ -209,7 +209,7 @@ HKLM:\SOFTWARE\Microsoft\Windows Search\CrawlScopeManager\Windows\SystemIndex\De
 
 ## 7. Explorer vs CLI — the only operation where the tool matters
 
-Eleven Explorer cases performed by hand at the guest console, twice (`explorer01`, `explorer02`). **88 of 88 cells identical between passes**, zero unclassified, zero tool disagreements.
+Eleven Explorer cases, performed three times: twice by hand at the guest console (`explorer01`, `explorer02`) and once by the automated driver (`explorerauto01`, see [below](#automated-pass-reproduces-the-manual-passes)). **88 of 88 cells identical across all three passes**, zero unclassified, zero tool disagreements.
 
 Explorer matches the CLI rules for **every** operation except the cross-volume move, where they differ on **two** cells — in opposite directions:
 
@@ -220,13 +220,15 @@ Explorer matches the CLI rules for **every** operation except the cross-volume m
 | **Metadata** | **inherited** | **time of move** | **Explorer** |
 | **Creation** | **time of move** | **inherited** | **Explorer** |
 
-Verified at 100 ns precision across both passes — the destination's Creation is byte-identical to the source's:
+Verified at 100 ns precision across all three passes — the destination's Creation is byte-identical to the source's:
 
 ```
 pass 1   src Creation 2026-10-11T20:45:33.9524184Z
          dst Creation 2026-10-11T20:45:33.9524184Z   IDENTICAL
 pass 2   src Creation 2026-10-11T22:35:32.7240246Z
          dst Creation 2026-10-11T22:35:32.7240246Z   IDENTICAL
+pass 3   src Creation 2026-10-24T16:00:21.9530772Z
+         dst Creation 2026-10-24T16:00:21.9530772Z   IDENTICAL   (automated)
 ```
 
 So the 22H2 charts' Explorer/CLI split on Creation is real and still holds. **The Metadata divergence is new**, and it is *CLI* that departs from 22H2 there — narrowing finding §1.2, which otherwise reads as though it applied to cross-volume moves generally.
@@ -248,8 +250,25 @@ If Metadata moved at deletion time, the file went to the Recycle Bin rather than
 
 Pass 2 renamed its case to `ren02.txt`, which fits 8.3. `HardLinkCount` fell from **2 to 1** — the short-name `$FILE_NAME` attribute is not created when the long name already conforms. **Timestamp results were identical either way**, so the rules hold regardless of how many `$FN` attributes a record carries. Worth knowing when reading `$FN` data: one attribute is not evidence of tampering.
 
+### Automated pass reproduces the manual passes
+
+`explorerauto01` performed the same eleven cases with `Invoke-ExplorerDriver.ps1`, which acts in the logged-on user's desktop session with real mouse and keyboard input (see `docs/explorer-test-plan.md`). All 11 cases passed the driver's self-checks, and the result agrees with both manual passes on **all 88 cells**.
+
+| | `explorer01` | `explorer02` | `explorerauto01` |
+|---|---|---|---|
+| Performed by | operator | operator | automated driver |
+| Cells agreeing with the other passes | 88 / 88 | 88 / 88 | 88 / 88 |
+| Measured window per case | 7 – 58 s | 11 – 86 s | 0.1 – 3.1 s |
+
+Case for case, the driver's windows are 7 to 170 times narrower than an operator's, and no result changed. None of the Explorer results depended on the wide manual windows: every timestamp change attributed to an operation landed within the driver's window or the classifier's 5-second tolerance around it.
+
+Two sub-second details are worth recording. Neither changes a rule-table cell.
+
+- **Cross-volume moves (cases 07 and 08).** `$SI` Access is written up to 21 ms *before* Entry Modified, or on the same tick. The ordering varies from pass to pass, including between the two manual passes, so it is Explorer's behavior rather than the driver's. Both values fall within the move and classify as the time of the move in every pass. The `PRECEDES` label these cases receive in `access-vs-entrymodified.csv` is therefore not evidence that the move left Access alone.
+- **Open (case 02).** Access trails Entry Modified by 0.09 to 0.39 seconds in all three passes, so the two are written by separate steps of the open rather than in a single record update.
+
 ## 8. Scope
 
-Tested on `V:` (64 GB, 4K clusters) and `W:` (256 GB, 4K clusters), 8.3 short names forced enabled, last-access updating enabled, tunneling at default. Explorer-driven mechanisms were **not** covered — they require an interactive desktop session and are pending. Folder operations, Recycle Bin deletion, and copy-over-existing were out of scope for this pass.
+The scripted matrix ran with each of four volumes as the primary (§5): `V:` (64 GB, 4K clusters), `W:` (256 GB, 4K), `X:` (64 GB, 64K) and the `C:` system volume (999 GB, 4K). The Explorer cases ran on `V:`, with `W:` as the cross-volume destination. Every volume had 8.3 short names enabled, last-access updating enabled and tunneling at default. Explorer-driven mechanisms are covered in §7: eleven cases, two manual passes and one automated pass. Recycle Bin deletion is covered through Explorer only (case 10). Folder operations and copy-over-existing were out of scope for this pass.
 
 Read `docs/exceptions.md` before applying these rules to real evidence.

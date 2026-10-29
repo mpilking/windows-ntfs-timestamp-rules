@@ -1,20 +1,25 @@
 <#
   Invoke-ExplorerTest.ps1
-  Interactive runner for the Explorer-driven cases.
-
-  MUST BE RUN FROM THE GUEST CONSOLE. Explorer operations need an interactive
-  desktop session; PowerShell Remoting and PowerShell Direct are both
-  non-interactive, so shell automation does not work over them. This is the one
-  part of the study a human performs by hand.
+  Runner for the Explorer-driven cases, performed by an operator or by the
+  automated driver.
 
   It is the same five-phase structure as Invoke-TimestampTest.ps1 -- fresh file
-  per case, before snapshot, operations, after snapshot -- with one difference:
-  each operation is bracketed by a prompt instead of a script call. Press Enter
-  immediately before and after each action and the measured window is as tight
-  as the automated runs.
+  per case, before snapshot, operations, after snapshot. Only phase 3 differs
+  between the two drivers, so both perform the same cases on identically
+  staged files and produce the same run.json, which Compare-Results.ps1 and
+  New-ResultsReport.ps1 consume unchanged.
 
-  Output is written in the same run.json format, so Compare-Results.ps1 and
-  New-ResultsReport.ps1 consume it unchanged.
+  -Driver Operator (default): RUN FROM THE GUEST CONSOLE. Each operation is
+  bracketed by a prompt; the operator presses Enter immediately before and
+  after acting.
+
+  -Driver Automated: run over PowerShell Remoting, elevated, while the harness
+  user is logged on at the console with the desktop unlocked. Phase 3 is
+  handed to Invoke-ExplorerDriver.ps1, launched in the console session through
+  a scheduled task with an interactive token, which performs each operation
+  with real mouse and keyboard input. Do not use the console while it runs.
+  The automated pass is an ADDITIONAL test, compared cell by cell with the
+  manual passes (Compare-Runs.ps1); it does not replace them.
 
   RUN THIS ON A NON-INDEXED VOLUME. Windows Search updates $SI Access on files
   in indexed locations roughly a second after any change, which would be
@@ -33,7 +38,17 @@ param(
     # defence; this widens the margin.
     [int]$PostRunSettleSeconds = 180,
 
-    [string]$RunLabel        = ('explorer_' + (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')),
+    [ValidateSet('Operator','Automated')]
+    [string]$Driver          = 'Operator',
+    # Automated only: pause between cases. An operator's cases were 30 s to
+    # several minutes apart; this keeps one case's background Explorer work
+    # from running into the next case's window.
+    [int]$CaseGapSeconds     = 20,
+    # Automated only: abandon the driver after this long. 0 = derive from the
+    # number of cases.
+    [int]$DriverTimeoutMinutes = 0,
+
+    [string]$RunLabel,
     [string[]]$OnlyCases
 )
 
@@ -42,8 +57,27 @@ Import-Module (Join-Path $HarnessRoot 'NtfsTimestamps.psm1') -Force
 Import-Module (Join-Path $HarnessRoot 'Operations.psm1') -Force
 Import-Module (Join-Path $HarnessRoot 'Capture.psm1')    -Force
 
-if (-not [Environment]::UserInteractive) {
-    throw 'Not an interactive session. Run this from the guest console, not over PowerShell Remoting.'
+if (-not $RunLabel) {
+    $prefix = if ($Driver -eq 'Automated') { 'explorerauto_' } else { 'explorer_' }
+    $RunLabel = $prefix + (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')
+}
+
+$consoleUser = $null
+if ($Driver -eq 'Operator') {
+    if (-not [Environment]::UserInteractive) {
+        throw 'Not an interactive session. Run this from the guest console, not over PowerShell Remoting -- or use -Driver Automated.'
+    }
+} else {
+    # The driver needs a desktop to act on: a user logged on at the console,
+    # with the session unlocked. Checked before anything is staged.
+    $consoleUser = (Get-CimInstance Win32_ComputerSystem).UserName
+    if (-not $consoleUser) { throw 'No user is logged on at the console. Log on as the harness user (or configure auto-logon) and re-run.' }
+    if (Get-Process -Name LogonUI -ErrorAction SilentlyContinue) { throw "The console session ($consoleUser) is locked. Unlock it and disable the lock-screen timeout for the run." }
+    if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole('Administrators')) {
+        throw 'Not elevated. The $MFT snapshots need raw volume access.'
+    }
+    $driverScript = Join-Path $HarnessRoot 'Invoke-ExplorerDriver.ps1'
+    if (-not (Test-Path -LiteralPath $driverScript)) { throw "Driver not found: $driverScript" }
 }
 
 $runDir = Join-Path $WorkDir $RunLabel
@@ -144,7 +178,9 @@ foreach ($c in $staged) {
     $c | Add-Member -NotePropertyName SourceEntryNumber -NotePropertyValue $(if ($rec) { $rec.EntryNumber } else { $null }) -Force
 }
 
-# --------------------------------------------------- PHASE 3: MANUAL ACTIONS
+# ---------------------------------------------------------- PHASE 3: ACTIONS
+$automation = $null
+if ($Driver -eq 'Operator') {
 Write-Host "`n=== PHASE 3: perform each operation in Explorer ===" -ForegroundColor Cyan
 Write-Host "Press Enter immediately BEFORE acting, and again immediately AFTER." -ForegroundColor Yellow
 Write-Host "Type s then Enter to skip a case.`n" -ForegroundColor Yellow
@@ -205,6 +241,125 @@ foreach ($c in $staged) {
     }
     Write-Host ("  recorded: {0:HH:mm:ss.fff} -> {1:HH:mm:ss.fff} UTC" -f $start, $end) -ForegroundColor DarkGray
 }
+} else {
+    Write-Host "`n=== PHASE 3: automated driver in $consoleUser's desktop session ===" -ForegroundColor Cyan
+    Write-Host "Do not use the console until the driver finishes." -ForegroundColor Yellow
+
+    # Exchange directory, written by the driver as the console user, so
+    # that user is granted write access to it explicitly.
+    $autoDir = Join-Path $runDir 'automation'
+    New-Item -ItemType Directory -Force -Path $autoDir | Out-Null
+    & icacls.exe $autoDir /grant "${consoleUser}:(OI)(CI)M" | Out-Null
+    $manifestPath = Join-Path $autoDir 'manifest.json'
+    $resultPath   = Join-Path $autoDir 'driver-result.json'
+    $logPath      = Join-Path $autoDir 'driver.log'
+    Remove-Item -LiteralPath $resultPath, $logPath -Force -ErrorAction SilentlyContinue
+
+    [pscustomobject]@{
+        RunLabel       = $RunLabel
+        ResultFile     = $resultPath
+        LogFile        = $logPath
+        CaseGapSeconds = $CaseGapSeconds
+        # Same naming as the operator instruction for case 03.
+        RenameBase     = "renamed_explorer_$RunLabel"
+        Cases          = @($staged | ForEach-Object {
+                             [pscustomobject]@{ CaseId=$_.CaseId; Operation=$_.Operation; Mechanism=$_.Mechanism
+                                                SourcePath=$_.SourcePath; SourceName=$_.SourceName; DestDir=$_.DestDir } })
+    } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+
+    $timeoutMin = $DriverTimeoutMinutes
+    if ($timeoutMin -le 0) {
+        $perCase = [double]($CaseGapSeconds + 90)
+        $timeoutMin = [int][Math]::Ceiling($staged.Count * $perCase / 60.0) + 5
+    }
+
+    # LogonType Interactive runs the task in the user's existing desktop
+    # session with their own token; no password is stored.
+    # RunLevel Highest is required, not a convenience: Windows silently drops
+    # injected input and refuses SetCursorPos while a higher-integrity window
+    # has focus (UIPI), and an elevated console is routinely left open on a
+    # test VM. The driver's elevation does not reach the operations -- they
+    # are performed by the user's existing, unelevated explorer.exe, and any
+    # application it launches inherits that.
+    # conhost --headless hosts the console without ever showing a window, so
+    # nothing steals focus or covers the Explorer windows.
+    $taskPath = '\NtfsTimestamps\'
+    $taskName = "ExplorerDriver_$RunLabel"
+    $psExe    = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    $action   = New-ScheduledTaskAction -Execute (Join-Path $env:SystemRoot 'System32\conhost.exe') `
+                    -Argument ("--headless `"$psExe`" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File `"$driverScript`" -Manifest `"$manifestPath`"")
+    $principal = New-ScheduledTaskPrincipal -UserId $consoleUser -LogonType Interactive -RunLevel Highest
+    $settings  = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew `
+                    -ExecutionTimeLimit (New-TimeSpan -Minutes $timeoutMin) -Priority 4
+    Register-ScheduledTask -TaskPath $taskPath -TaskName $taskName -Action $action -Principal $principal -Settings $settings -Force | Out-Null
+
+    $shown = 0
+    $relay = {
+        $lines = @()
+        try { $lines = @(Get-Content -LiteralPath $logPath -ErrorAction Stop) } catch { }
+        for ($i = $shown; $i -lt $lines.Count; $i++) { Write-Host "  [driver] $($lines[$i])" -ForegroundColor DarkGray }
+        if ($lines.Count -gt $shown) { $shown = $lines.Count }
+    }
+    try {
+        Start-ScheduledTask -TaskPath $taskPath -TaskName $taskName
+        $clock = [Diagnostics.Stopwatch]::StartNew()
+        while (-not (Test-Path -LiteralPath $resultPath)) {
+            Start-Sleep -Seconds 2
+            . $relay
+            $state = (Get-ScheduledTask -TaskPath $taskPath -TaskName $taskName).State
+            if ($clock.Elapsed.TotalSeconds -gt 60 -and -not (Test-Path -LiteralPath $logPath)) {
+                throw "The driver produced no log within 60 s (task state: $state). Check that $consoleUser is logged on at the console and can run $driverScript."
+            }
+            if ($clock.Elapsed.TotalSeconds -gt 10 -and $state -ne 'Running' -and -not (Test-Path -LiteralPath $resultPath)) {
+                Start-Sleep -Seconds 2
+                if (-not (Test-Path -LiteralPath $resultPath)) {
+                    $last = (Get-ScheduledTaskInfo -TaskPath $taskPath -TaskName $taskName).LastTaskResult
+                    throw ("The driver exited without writing results (task result 0x{0:x}). Partial results, if any: {1}.partial" -f $last, $resultPath)
+                }
+            }
+            if ($clock.Elapsed.TotalMinutes -gt $timeoutMin) {
+                Stop-ScheduledTask -TaskPath $taskPath -TaskName $taskName -ErrorAction SilentlyContinue
+                throw "The driver did not finish within $timeoutMin minutes and was stopped."
+            }
+        }
+        . $relay
+    } finally {
+        Unregister-ScheduledTask -TaskPath $taskPath -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
+    }
+
+    $drv = Get-Content -Raw -LiteralPath $resultPath | ConvertFrom-Json
+    $byId = @{}
+    foreach ($r in @($drv.Cases)) { $byId["$($r.CaseId)"] = $r }
+    foreach ($c in $staged) {
+        $r = $byId["$($c.CaseId)"]
+        if (-not $r) {
+            $c.Result = [pscustomobject]@{ OpStartUtc=$null; OpEndUtc=$null; PathAfter=$null; NameAfter=$null; Error='not performed by the driver' }
+            continue
+        }
+        $c.Result = [pscustomobject]@{
+            OpStartUtc = $r.OpStartUtc
+            OpEndUtc   = $r.OpEndUtc
+            PathAfter  = $r.PathAfter
+            NameAfter  = $r.NameAfter
+            LiveSI     = $r.LiveSI
+            Error      = $r.Error
+            Automation = [pscustomobject]@{ ViewMode=$r.ViewMode; Steps=@($r.Steps) }
+        }
+        if ($r.Error) {
+            Write-Host ("  {0}  FAILED  {1}" -f $c.CaseId, $r.Error) -ForegroundColor Yellow
+        } else {
+            $w = ((Get-Date $r.OpEndUtc) - (Get-Date $r.OpStartUtc)).TotalSeconds
+            Write-Host ("  {0}  ok  window {1:N2} s" -f $c.CaseId, $w) -ForegroundColor DarkGray
+        }
+    }
+    $automation = [pscustomobject]@{
+        Driver      = 'Invoke-ExplorerDriver.ps1'
+        TaskUser    = $consoleUser
+        Context     = $drv.Context
+        StartedUtc  = $drv.StartedUtc
+        CompletedUtc= $drv.CompletedUtc
+    }
+}
 
 # ----------------------------------------------------------- PHASE 4: AFTER
 if ($PostRunSettleSeconds -gt 0) {
@@ -236,6 +391,9 @@ function Select-CaseRecords {
 
 $out = [pscustomobject]@{
     RunLabel        = $RunLabel
+    Driver          = $Driver.ToLowerInvariant()
+    Harness         = Get-HarnessProvenance -RepoRoot (Split-Path -Parent $HarnessRoot)
+    Automation      = $automation
     Interactive     = $true
     CompletedUtc    = (Get-Date).ToUniversalTime().ToString('o')
     PrimaryVolume   = $PrimaryVolume
@@ -254,7 +412,8 @@ $out | ConvertTo-Json -Depth 8 -Compress | Set-Content -LiteralPath $jsonPath -E
 
 $done    = @($staged | Where-Object { -not $_.Result.Error })
 $skipped = @($staged | Where-Object { $_.Result.Error })
-Write-Host "`nComplete: $($done.Count) performed, $($skipped.Count) skipped"
+$notDone = if ($Driver -eq 'Automated') { 'failed self-check' } else { 'skipped' }
+Write-Host "`nComplete: $($done.Count) performed, $($skipped.Count) $notDone"
 Write-Host "  $jsonPath"
 Write-Host "`nNext:" -ForegroundColor Cyan
 Write-Host "  .\harness\Compare-Results.ps1 -RunJson '$jsonPath'"

@@ -302,6 +302,8 @@ Write-Host "`n=== scoping embedded records ==="
 
 $out = [pscustomobject]@{
     RunLabel        = $RunLabel
+    Driver          = 'script'
+    Harness         = Get-HarnessProvenance -RepoRoot (Split-Path -Parent $HarnessRoot)
     StartedUtc      = $cases[0].CreatedUtc
     CompletedUtc    = (Get-Date).ToUniversalTime().ToString('o')
     PrimaryVolume   = $PrimaryVolume

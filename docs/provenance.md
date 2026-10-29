@@ -65,6 +65,10 @@ Binary hashes alone do not describe a test environment. The fingerprint also rec
 
 Anyone rebuilding an equivalent environment should match the first three in particular. Last access updating and tunneling both alter the results directly, and a mismatch there will look like a behavior difference in Windows rather than a difference in configuration.
 
+## Harness version
+
+Each `run.json` also records the harness that produced it. Every harness and provision script is hashed (SHA256, with line endings normalized to LF so a Windows and a Linux checkout of the same commit agree), and the set is reduced to a single digest. The git commit is recorded too when the run starts from a checkout. Recomputing the digest from a clean checkout with `Get-HarnessProvenance` (in `harness/Capture.psm1`) confirms which version of the scripts a result came from.
+
 ## Run validity
 
 A fingerprint is captured immediately before the first operation and again immediately after the last. `Compare-Fingerprint.ps1` diffs them and fails the run if any components changed partway through.

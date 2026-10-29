@@ -1,0 +1,287 @@
+﻿{
+    "Context":  {
+                    "User":  "WIN11\\<harness-user>",
+                    "SessionId":  2,
+                    "Elevated":  true,
+                    "DpiAwareness":  "per-monitor-v2",
+                    "SystemDpi":  96,
+                    "VirtualScreen":  "0,0 1280x800",
+                    "WorkArea":  "0,0 1280x752",
+                    "ExtensionsShown":  true,
+                    "DoubleClickMs":  500,
+                    "CaseGapSeconds":  20
+                },
+    "StartedUtc":  "2026-10-24T16:00:45.1590746Z",
+    "CompletedUtc":  "2026-10-24T16:04:53.7941134Z",
+    "Cases":  [
+                  {
+                      "CaseId":  "01_file_access_explorer_browse",
+                      "OpStartUtc":  "2026-10-24T16:00:47.5558491Z",
+                      "OpEndUtc":  "2026-10-24T16:00:47.8620350Z",
+                      "PathAfter":  "V:\\case_130a4c26f7f7\\create_LongEnoughToForceShortName_2eb45670.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_2eb45670.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9218779Z",
+                                     "Modified":  "2026-10-24T16:00:21.9218779Z",
+                                     "Access":  "2026-10-24T16:00:21.9218779Z",
+                                     "EntryModified":  "2026-10-24T16:00:21.9218779Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:00:45.825 opened V:\\case_130a4c26f7f7 as window 0x45072a",
+                                    "16:00:46.702 item \u0027create_LongEnoughToForceShortName_2eb45670.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:00:47.558 START",
+                                    "16:00:47.801 click (264,180) select create_LongEnoughToForceShortName_2eb45670.txt; cursor now (264,180)",
+                                    "16:00:47.855 selected",
+                                    "16:00:47.862 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "02_file_access_explorer_open",
+                      "OpStartUtc":  "2026-10-24T16:01:10.2065850Z",
+                      "OpEndUtc":  "2026-10-24T16:01:12.9318158Z",
+                      "PathAfter":  "V:\\case_93c4521e9e2a\\create_LongEnoughToForceShortName_495c81e0.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_495c81e0.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9387908Z",
+                                     "Modified":  "2026-10-24T16:00:21.9387908Z",
+                                     "Access":  "2026-10-24T16:01:11.0841027Z",
+                                     "EntryModified":  "2026-10-24T16:01:10.6990673Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:01:08.654 opened V:\\case_93c4521e9e2a as window 0xb0836",
+                                    "16:01:09.351 item \u0027create_LongEnoughToForceShortName_495c81e0.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:01:10.206 START",
+                                    "16:01:10.666 double-click (264,180) open create_LongEnoughToForceShortName_495c81e0.txt; cursor now (264,180)",
+                                    "16:01:11.200 opened in \u0027create_LongEnoughToForceShortName_495c81e0.txt - Notepad\u0027 [Notepad]",
+                                    "16:01:12.931 editor closed confirmed",
+                                    "16:01:12.931 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "03_file_rename_explorer_rename",
+                      "OpStartUtc":  "2026-10-24T16:01:35.4248952Z",
+                      "OpEndUtc":  "2026-10-24T16:01:36.6426379Z",
+                      "PathAfter":  "V:\\case_8ab1279aaf49\\renamed_explorer_explorerauto01.txt",
+                      "NameAfter":  "renamed_explorer_explorerauto01.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9433067Z",
+                                     "Modified":  "2026-10-24T16:00:21.9433067Z",
+                                     "Access":  "2026-10-24T16:00:21.9433067Z",
+                                     "EntryModified":  "2026-10-24T16:01:36.5720933Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:01:33.585 opened V:\\case_8ab1279aaf49 as window 0x2c0826",
+                                    "16:01:34.283 item \u0027create_LongEnoughToForceShortName_6117951b.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:01:34.519 click (264,180) select create_LongEnoughToForceShortName_6117951b.txt; cursor now (264,180)",
+                                    "16:01:35.424 START",
+                                    "16:01:35.487 rename box open",
+                                    "16:01:36.642 rename to renamed_explorer_explorerauto01.txt confirmed",
+                                    "16:01:36.642 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "04_file_copy_explorer_copy",
+                      "OpStartUtc":  "2026-10-24T16:01:59.8320877Z",
+                      "OpEndUtc":  "2026-10-24T16:02:01.2272362Z",
+                      "PathAfter":  "V:\\case_3ca0afa55de5\\create_LongEnoughToForceShortName_dc39387f.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_dc39387f.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:02:00.6348331Z",
+                                     "Modified":  "2026-10-24T16:00:21.9433067Z",
+                                     "Access":  "2026-10-24T16:02:00.6348331Z",
+                                     "EntryModified":  "2026-10-24T16:00:21.9433067Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:01:57.265 opened V:\\case_434b06baab7e as window 0x1b08b8",
+                                    "16:01:57.915 opened V:\\case_3ca0afa55de5 as window 0x190890",
+                                    "16:01:58.675 item \u0027create_LongEnoughToForceShortName_dc39387f.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:01:58.925 click (264,180) select create_LongEnoughToForceShortName_dc39387f.txt; cursor now (264,180)",
+                                    "16:01:59.832 START",
+                                    "16:02:00.003 Ctrl+C",
+                                    "16:02:00.535 click (1040,486) destination folder; cursor now (1040,486)",
+                                    "16:02:01.086 Ctrl+V",
+                                    "16:02:01.227 copy confirmed",
+                                    "16:02:01.227 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "05_file_move_local_explorer_cutpaste",
+                      "OpStartUtc":  "2026-10-24T16:02:24.6853560Z",
+                      "OpEndUtc":  "2026-10-24T16:02:25.7748609Z",
+                      "PathAfter":  "V:\\case_cb721e5c2e23\\create_LongEnoughToForceShortName_f93772aa.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_f93772aa.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9485648Z",
+                                     "Modified":  "2026-10-24T16:00:21.9485648Z",
+                                     "Access":  "2026-10-24T16:00:21.9485648Z",
+                                     "EntryModified":  "2026-10-24T16:02:25.5132268Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:02:22.218 opened V:\\case_032649b26627 as window 0x908ae",
+                                    "16:02:22.846 opened V:\\case_cb721e5c2e23 as window 0x1408da",
+                                    "16:02:23.571 item \u0027create_LongEnoughToForceShortName_f93772aa.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:02:23.785 click (264,180) select create_LongEnoughToForceShortName_f93772aa.txt; cursor now (264,180)",
+                                    "16:02:24.685 START",
+                                    "16:02:24.858 Ctrl+X",
+                                    "16:02:25.388 click (1040,486) destination folder; cursor now (1040,486)",
+                                    "16:02:25.529 Ctrl+V",
+                                    "16:02:25.772 move confirmed",
+                                    "16:02:25.774 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "06_file_move_local_explorer_drag",
+                      "OpStartUtc":  "2026-10-24T16:02:48.9530752Z",
+                      "OpEndUtc":  "2026-10-24T16:02:51.6378107Z",
+                      "PathAfter":  "V:\\case_4cd01dd3db8c\\create_LongEnoughToForceShortName_d192092b.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_d192092b.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9508433Z",
+                                     "Modified":  "2026-10-24T16:00:21.9508433Z",
+                                     "Access":  "2026-10-24T16:00:21.9508433Z",
+                                     "EntryModified":  "2026-10-24T16:02:51.4230043Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:02:46.731 opened V:\\case_73826fd34974 as window 0x4907ec",
+                                    "16:02:47.304 opened V:\\case_4cd01dd3db8c as window 0x720324",
+                                    "16:02:48.047 item \u0027create_LongEnoughToForceShortName_d192092b.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:02:48.953 START",
+                                    "16:02:51.630 drag (264,180) -\u003e (1040,486)",
+                                    "16:02:51.637 drag move confirmed",
+                                    "16:02:51.637 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "07_file_move_volume_explorer_cutpaste",
+                      "OpStartUtc":  "2026-10-24T16:03:14.8790185Z",
+                      "OpEndUtc":  "2026-10-24T16:03:16.0851482Z",
+                      "PathAfter":  "W:\\case_d19a3880f920\\create_LongEnoughToForceShortName_ecd5f053.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_ecd5f053.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9530772Z",
+                                     "Modified":  "2026-10-24T16:00:21.9530772Z",
+                                     "Access":  "2026-10-24T16:03:15.6299370Z",
+                                     "EntryModified":  "2026-10-24T16:03:15.6400255Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:03:12.420 opened V:\\case_e2855e1b1ef9 as window 0x230882",
+                                    "16:03:13.011 opened W:\\case_d19a3880f920 as window 0x20085c",
+                                    "16:03:13.727 item \u0027create_LongEnoughToForceShortName_ecd5f053.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:03:13.961 click (264,180) select create_LongEnoughToForceShortName_ecd5f053.txt; cursor now (264,180)",
+                                    "16:03:14.879 START",
+                                    "16:03:15.020 Ctrl+X",
+                                    "16:03:15.523 click (1040,486) destination folder; cursor now (1040,486)",
+                                    "16:03:15.990 Ctrl+V",
+                                    "16:03:16.045 move confirmed",
+                                    "16:03:16.085 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "08_file_move_volume_explorer_dragshift",
+                      "OpStartUtc":  "2026-10-24T16:03:39.1732247Z",
+                      "OpEndUtc":  "2026-10-24T16:03:42.2801669Z",
+                      "PathAfter":  "W:\\case_752a2959f481\\create_LongEnoughToForceShortName_9756cedc.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_9756cedc.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9570471Z",
+                                     "Modified":  "2026-10-24T16:00:21.9570471Z",
+                                     "Access":  "2026-10-24T16:03:41.8859182Z",
+                                     "EntryModified":  "2026-10-24T16:03:41.8859182Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:03:36.847 opened V:\\case_c017fbeaf6dc as window 0x32087c",
+                                    "16:03:37.547 opened W:\\case_752a2959f481 as window 0x56060a",
+                                    "16:03:38.265 item \u0027create_LongEnoughToForceShortName_9756cedc.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:03:39.173 START",
+                                    "16:03:42.264 drag+shift (264,180) -\u003e (1040,486)",
+                                    "16:03:42.280 drag move confirmed",
+                                    "16:03:42.280 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "09_file_copy_explorer_dragcrossvol",
+                      "OpStartUtc":  "2026-10-24T16:04:05.3371528Z",
+                      "OpEndUtc":  "2026-10-24T16:04:08.3101027Z",
+                      "PathAfter":  "W:\\case_5c64e8ec4ddb\\create_LongEnoughToForceShortName_55e0a193.txt",
+                      "NameAfter":  "create_LongEnoughToForceShortName_55e0a193.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:04:07.7581165Z",
+                                     "Modified":  "2026-10-24T16:00:21.9616745Z",
+                                     "Access":  "2026-10-24T16:04:07.7581165Z",
+                                     "EntryModified":  "2026-10-24T16:00:21.9616745Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:04:02.953 opened V:\\case_128aa554491c as window 0xd08b0",
+                                    "16:04:03.768 opened W:\\case_5c64e8ec4ddb as window 0xb50828",
+                                    "16:04:04.460 item \u0027create_LongEnoughToForceShortName_55e0a193.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:04:05.337 START",
+                                    "16:04:07.904 drag (264,180) -\u003e (1040,486)",
+                                    "16:04:08.310 drag copy confirmed",
+                                    "16:04:08.310 END"
+                                ]
+                  },
+                  {
+                      "CaseId":  "10_file_delete_explorer_recycle",
+                      "OpStartUtc":  "2026-10-24T16:04:30.8716007Z",
+                      "OpEndUtc":  "2026-10-24T16:04:30.9988574Z",
+                      "PathAfter":  "V:\\$Recycle.Bin\\S-1-5-21-2741276004-2306715210-1952543746-1002\\$RZ9XJON.txt",
+                      "NameAfter":  "$RZ9XJON.txt",
+                      "LiveSI":  {
+                                     "Created":  "2026-10-24T16:00:21.9664131Z",
+                                     "Modified":  "2026-10-24T16:00:21.9664131Z",
+                                     "Access":  "2026-10-24T16:00:21.9664131Z",
+                                     "EntryModified":  "2026-10-24T16:04:30.9039721Z"
+                                 },
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:04:29.091 opened V:\\case_1f7437f0be5b as window 0x350880",
+                                    "16:04:29.781 item \u0027create_LongEnoughToForceShortName_db44a1ab.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:04:29.984 click (264,180) select create_LongEnoughToForceShortName_db44a1ab.txt; cursor now (264,180)",
+                                    "16:04:30.871 START",
+                                    "16:04:30.976 Delete",
+                                    "16:04:30.996 recycled",
+                                    "16:04:31.001 END",
+                                    "16:04:31.044 recycled as V:\\$Recycle.Bin\\S-1-5-21-2741276004-2306715210-1952543746-1002\\$RZ9XJON.txt"
+                                ]
+                  },
+                  {
+                      "CaseId":  "11_file_delete_explorer_shiftdelete",
+                      "OpStartUtc":  "2026-10-24T16:04:53.5214830Z",
+                      "OpEndUtc":  "2026-10-24T16:04:53.7628237Z",
+                      "PathAfter":  null,
+                      "NameAfter":  null,
+                      "LiveSI":  null,
+                      "Error":  null,
+                      "ViewMode":  4,
+                      "Steps":  [
+                                    "16:04:51.713 opened V:\\case_4f791976561f as window 0x26086a",
+                                    "16:04:52.427 item \u0027create_LongEnoughToForceShortName_04b2a131.txt\u0027 at 182,167 598x24, target (264,180)",
+                                    "16:04:52.631 click (264,180) select create_LongEnoughToForceShortName_04b2a131.txt; cursor now (264,180)",
+                                    "16:04:53.521 START",
+                                    "16:04:53.677 Shift+Delete",
+                                    "16:04:53.690 dialog \u0027Delete File\u0027 -\u003e Yes",
+                                    "16:04:53.760 permanent delete confirmed",
+                                    "16:04:53.762 END"
+                                ]
+                  }
+              ]
+}

@@ -109,7 +109,7 @@ Enabling Hyper-V puts VMware Workstation on the Windows Hypervisor Platform, whi
 
 ## Gotchas
 
-**Explorer-driven tests need the console.** Remoting and PowerShell Direct are both non-interactive, and `Invoke-ExplorerTest.ps1` refuses to start outside an interactive session. See [explorer-test-plan.md](explorer-test-plan.md).
+**Explorer-driven tests need the console.** Remoting and PowerShell Direct are both non-interactive, so a manual pass runs at the guest console, and `Invoke-ExplorerTest.ps1` refuses to start one outside an interactive session. The automated pass runs over Remoting or PowerShell Direct but acts on the console session, so the harness user must be logged on there with the desktop unlocked. See [explorer-test-plan.md](explorer-test-plan.md).
 
 **The search indexer restarts itself.** `WSearch` is `Auto` with `DelayedAutostart`; stopping it does not keep it stopped. Verify in the fingerprint comparison rather than assuming. See [methodology.md](methodology.md).
 

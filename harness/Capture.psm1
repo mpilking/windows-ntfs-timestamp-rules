@@ -197,7 +197,60 @@ function Select-SnapshotRecord {
     $Snapshot.Records | Where-Object { $_.FileName -eq $FileName }
 }
 
+function Get-HarnessProvenance {
+<#  .SYNOPSIS  Identify the harness code that produced a run.
+    Every harness and provision script is hashed, and the set is reduced to a
+    single digest stored in run.json, so a result can be tied to the exact
+    scripts that generated it.
+
+    Line endings are normalised to LF before hashing. Git stores LF, and a
+    Windows checkout with autocrlf holds CRLF, so hashing raw bytes would give
+    the same commit two digests depending on where it was checked out. With
+    normalisation, anyone can recompute the digest from a clean checkout of the
+    repository and compare it to the one recorded with a result.
+
+    The commit id is recorded only where the tree is a git checkout -- usually
+    the host, not the guest, which receives a plain copy. #>
+    [CmdletBinding()]
+    param([string]$RepoRoot = (Split-Path -Parent $PSScriptRoot))
+
+    $files = @(foreach ($sub in 'harness','provision') {
+        $dir = Join-Path $RepoRoot $sub
+        if (Test-Path -LiteralPath $dir) {
+            Get-ChildItem -LiteralPath $dir -File | Where-Object { $_.Extension -in '.ps1','.psm1' }
+        }
+    }) | Sort-Object { $_.FullName.Substring($RepoRoot.Length).TrimStart('\').Replace('\','/') }
+
+    $sha = [Security.Cryptography.SHA256]::Create()
+    $hex = { param([byte[]]$b) -join ($sha.ComputeHash($b) | ForEach-Object { $_.ToString('x2') }) }
+    $perFile = [ordered]@{}
+    $lines = New-Object Text.StringBuilder
+    foreach ($f in $files) {
+        $rel  = $f.FullName.Substring($RepoRoot.Length).TrimStart('\').Replace('\','/')
+        $text = [Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($f.FullName)).Replace("`r`n", "`n")
+        $h    = & $hex ([Text.Encoding]::UTF8.GetBytes($text))
+        $perFile[$rel] = $h
+        [void]$lines.Append("$h  $rel`n")
+    }
+    $digest = & $hex ([Text.Encoding]::UTF8.GetBytes($lines.ToString()))
+
+    $commit = $null; $dirty = $null
+    if ((Test-Path -LiteralPath (Join-Path $RepoRoot '.git')) -and (Get-Command git -ErrorAction SilentlyContinue)) {
+        $commit = (& git -C $RepoRoot rev-parse HEAD 2>$null)
+        $dirty  = [bool](& git -C $RepoRoot status --porcelain -- harness provision 2>$null)
+    }
+
+    [pscustomobject]@{
+        Digest    = $digest
+        FileCount = $files.Count
+        Commit    = $commit
+        Dirty     = $dirty
+        Files     = $perFile
+    }
+}
+
 # The individual parser wrappers are exported so archived $MFT files can be
 # re-parsed later (Update-RunSnapshots.ps1) without re-running a whole capture.
 Export-ModuleMember -Function Get-MftSnapshot, Select-SnapshotRecord, ConvertTo-Utc,
-                              Invoke-MFTECmd, Invoke-Velociraptor, Invoke-MftDump
+                              Invoke-MFTECmd, Invoke-Velociraptor, Invoke-MftDump,
+                              Get-HarnessProvenance

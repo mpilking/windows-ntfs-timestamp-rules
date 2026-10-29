@@ -151,7 +151,7 @@ After a guest reboot, VHDX attachment does not persist:
 
 ## Gotchas
 
-**Explorer-driven tests need the console.** PowerShell Remoting sessions are non-interactive, so shell automation does not work over them, and `Invoke-ExplorerTest.ps1` refuses to start outside an interactive session. See [explorer-test-plan.md](explorer-test-plan.md).
+**Explorer-driven tests need the console.** PowerShell Remoting sessions are non-interactive, so a manual pass runs at the guest console, and `Invoke-ExplorerTest.ps1` refuses to start one outside an interactive session. The automated pass runs over Remoting but acts on the console session, so the harness user must be logged on there with the desktop unlocked. See [explorer-test-plan.md](explorer-test-plan.md).
 
 **The search indexer restarts itself.** `WSearch` is `Auto` with `DelayedAutostart`; stopping it does not keep it stopped. Verify in the fingerprint comparison rather than assuming. See [methodology.md](methodology.md).
 

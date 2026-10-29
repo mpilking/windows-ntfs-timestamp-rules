@@ -34,12 +34,16 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$RunJson,
-    [string]$BaselineDir = (Join-Path $PSScriptRoot '..\expected'),
+    [string]$BaselineDir,                    # default: ..\expected
     [string]$OutDir      = (Split-Path -Parent $RunJson),
     [int]$ToleranceSeconds = 2
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Windows PowerShell 5.1 leaves $PSScriptRoot empty in the param defaults of a
+# [CmdletBinding()] script run with -File; it is set by the time the body runs.
+if (-not $BaselineDir) { $BaselineDir = Join-Path $PSScriptRoot '..\expected' }
 
 $run = Get-Content -Raw -LiteralPath $RunJson | ConvertFrom-Json
 $tol = [TimeSpan]::FromSeconds($ToleranceSeconds)

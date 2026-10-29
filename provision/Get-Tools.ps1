@@ -17,13 +17,18 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$ToolDir   = (Join-Path $PSScriptRoot '..\tools'),
-    [string]$HashFile  = (Join-Path $PSScriptRoot '..\tools\tool-hashes.json'),
+    [string]$ToolDir,                        # default: ..\tools
+    [string]$HashFile,                       # default: ..\tools\tool-hashes.json
     [switch]$Update
 )
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
+
+# Windows PowerShell 5.1 leaves $PSScriptRoot empty in the param defaults of a
+# [CmdletBinding()] script run with -File; it is set by the time the body runs.
+if (-not $ToolDir)  { $ToolDir  = Join-Path $PSScriptRoot '..\tools' }
+if (-not $HashFile) { $HashFile = Join-Path $PSScriptRoot '..\tools\tool-hashes.json' }
 
 $Tools = @(
     [pscustomobject]@{

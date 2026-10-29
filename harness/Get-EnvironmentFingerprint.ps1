@@ -6,11 +6,15 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$OutDir = (Join-Path $PSScriptRoot '..\results'),
+    [string]$OutDir,                         # default: ..\results
     [string[]]$TestVolume = @('C:')
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Windows PowerShell 5.1 leaves $PSScriptRoot empty in the param defaults of a
+# [CmdletBinding()] script run with -File; it is set by the time the body runs.
+if (-not $OutDir) { $OutDir = Join-Path $PSScriptRoot '..\results' }
 $fsKey = 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem'
 
 function Get-FsutilBehavior {

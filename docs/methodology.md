@@ -126,7 +126,7 @@ Each observed value is labelled against the operation's tolerance window rather 
 
 | Label | Meaning |
 |---|---|
-| `OP_TIME` | inside the operation's window (± tolerance) |
+| `OP_TIME` | inside the operation's window (± tolerance, default 2 s) |
 | `NO_CHANGE` | identical to the pre-operation value |
 | `INHERITED` | equals the source file's pre-operation value for the same field |
 | `PREV_SI_*` | equals the source's pre-operation `$SI` value for a named field |
@@ -135,9 +135,11 @@ Each observed value is labelled against the operation's tolerance window rather 
 
 The classifier returns **every** label that fits and marks a cell `AMBIGUOUS` when more than one survives. Ambiguity is reported, not resolved.
 
+**Why 2 seconds.** The tolerance (`-ToleranceSeconds`) was set from the data. Across every 25H2 run, no value an operation wrote fell more than a millisecond outside its bracketed window, so 2 s is a wide margin. Every value further out came from Windows Search on an indexed path, up to about 2 s after the operation. An earlier 5 s default credited two of those to robocopy; at 2 or 3 s, no verdict in any other run changes.
+
 ### Three checks the verdict labels cannot make
 
-`OP_TIME` uses a multi-second tolerance window, so by construction it cannot distinguish *the operation wrote this value* from *something else wrote it a second later* — nor can any `$MFT`-only comparison tell a value that did not change from one that has not been written yet. Three exact-tick analyses run alongside the classifier for these reasons, each emitting its own CSV.
+`OP_TIME` uses a two-second tolerance window, so by construction it cannot distinguish *the operation wrote this value* from *something else wrote it a second later* — nor can any `$MFT`-only comparison tell a value that did not change from one that has not been written yet. Three exact-tick analyses run alongside the classifier for these reasons, each emitting its own CSV.
 
 **Live vs `$MFT`** (`pending-writes.csv`). Each case records the live `$SI` read taken immediately after its operation. Where that disagrees with the parsed `$MFT`, the write had not yet reached disk; the live value is authoritative because it is the in-memory record. Reported rather than silently classified, since the failure mode is a false `NO_CHANGE` — which looks exactly like a finding. See [Capture](#capture) for why a flush does not prevent this.
 

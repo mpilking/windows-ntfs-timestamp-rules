@@ -15,7 +15,13 @@
   Access times in Windows 11 have been observed to differ from the moment of
   activity by up to a few seconds. Testing OP_TIME by equality would produce
   false negatives on exactly the row most prone to skew. The window spans the
-  bracketed operation plus -Tolerance on each side.
+  bracketed operation plus -ToleranceSeconds on each side.
+
+  The 2 s default is measured, not guessed. Across every 25H2 run, no value an
+  operation wrote fell more than 1 ms outside its bracketed window, so 2 s is a
+  wide margin. Every value further out was written by Windows Search on an
+  indexed path, up to ~2 s after the operation. No window width separates those
+  reliably; access-vs-entrymodified.csv does.
 
   AMBIGUITY IS REPORTED, NOT RESOLVED:
   A value can satisfy more than one label -- on a pristine file, NO_CHANGE and
@@ -30,7 +36,7 @@ param(
     [Parameter(Mandatory)][string]$RunJson,
     [string]$BaselineDir = (Join-Path $PSScriptRoot '..\expected'),
     [string]$OutDir      = (Split-Path -Parent $RunJson),
-    [int]$ToleranceSeconds = 5
+    [int]$ToleranceSeconds = 2
 )
 
 $ErrorActionPreference = 'Stop'

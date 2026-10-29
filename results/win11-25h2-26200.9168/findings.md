@@ -157,12 +157,12 @@ All fifteen differences are the Access timestamp:
 |---|---|---|
 | Rename (all 3 mechanisms) | no change | set by the indexer, ~1 s later |
 | Local move (all 3 mechanisms) | no change | set by the indexer, ~1 s later |
-| Copy via robocopy | inherited | set by the indexer, ~1 s later |
+| Copy via robocopy | inherited | set by the indexer, ~2 s later |
 | Read via .NET | time of operation | **no change** |
 
 The last row runs the other way and is the one-hour deferral at work: the indexer had already set Access, so NTFS suppressed the update from the read that followed.
 
-> **The operation does not write Access even here.** The classifier's `OP_TIME` label uses a ±5 s tolerance window, which is too coarse to separate "the operation set this" from "something else set it a second later". Comparing exact ticks shows the latter.
+> **The operation does not write Access even here.** The classifier's `OP_TIME` label uses a ±2 s tolerance window, which is too coarse to separate "the operation set this" from "something else set it a second later". Comparing exact ticks shows the latter.
 
 ### The indexer's signature: Access trails Entry Modified
 
@@ -260,7 +260,7 @@ Pass 2 renamed its case to `ren02.txt`, which fits 8.3. `HardLinkCount` fell fro
 | Cells agreeing with the other passes | 88 / 88 | 88 / 88 | 88 / 88 |
 | Measured window per case | 7 – 58 s | 11 – 86 s | 0.1 – 3.1 s |
 
-Case for case, the driver's windows are 7 to 170 times narrower than an operator's, and no result changed. None of the Explorer results depended on the wide manual windows: every timestamp change attributed to an operation landed within the driver's window or the classifier's 5-second tolerance around it.
+Case for case, the driver's windows are 7 to 170 times narrower than an operator's, and no result changed. None of the Explorer results depended on the wide manual windows: every timestamp change attributed to an operation landed within the driver's window or the classifier's 2-second tolerance around it.
 
 Two sub-second details are worth recording. Neither changes a rule-table cell.
 

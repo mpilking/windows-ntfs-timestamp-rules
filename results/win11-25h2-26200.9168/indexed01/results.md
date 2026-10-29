@@ -42,6 +42,8 @@ They are tool behaviour, not NTFS rules, and belong on the exceptions list:
 | Attr | Operation | Timestamp | Core result | Mechanism | Its result |
 |---|---|---|---|---|---|
 | `SI` | Access | Access | op time | `dotnet` | no change |
+| `SI` | Copy | Access | op time | `robocopy` | **unclassified** |
+| `SI` | Copy | Access | op time | `robocopy_dat` | **unclassified** |
 | `SI` | Copy | Creation | op time | `robocopy` | inherited |
 | `SI` | Copy | Creation | op time | `robocopy_dat` | inherited |
 | `SI` | Volume Move | Access | op time | `robocopy_move` | inherited |

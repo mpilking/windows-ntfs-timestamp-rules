@@ -41,7 +41,7 @@ Six components, six different revisions, serviced independently. (They report `2
 Worth noting, timestamp outcomes depend on **the caller** as much as on the NTFS driver. For example, as measured on the "Windows 11 25H2" tests:
 
 - A cross-volume move via **Explorer** inherits `$SI` Creation; the same move via **CLI** sets it to the move time. Identical `ntfs.sys`, but different results.
-- **Opening** a file from Explorer updates MFT Entry Modified; a programmatic (CLI) read does not. That is the application, not the filesystem.
+- **Opening** a file from Explorer updates MFT Entry Modified; a programmatic (CLI) read does not. That is the shell, which gives the file an object ID for its Recent Items shortcut, not the filesystem.
 - **Windows Search** updates Access time on files it crawls, typically about a second after any change.
 
 None of those live in `ntfs.sys`, and any of them could change in an update that leaves the driver untouched.

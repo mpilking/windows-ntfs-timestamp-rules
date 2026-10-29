@@ -80,7 +80,7 @@ All four mechanisms agree. Note this sits beside `$SI` Creation correctly showin
 
 `robocopy` returned `inherited` for `$SI` Creation and Access where `copy`, `xcopy`, `Copy-Item` and `File.Copy` returned operation time, on both copy and cross-volume move.
 
-This is **documented robocopy behavior, not an NTFS change**: the default `/COPY:DAT` copies Data, Attributes and **Timestamps**. The 22H2 charts simply did not test robocopy. It belongs on the exceptions list, not in the rule table. See `docs/exceptions.md` D8.
+This is **documented robocopy behavior, not an NTFS change**: the default `/COPY:DAT` copies Data, Attributes and **Timestamps**. The 22H2 charts simply did not test robocopy. It belongs on the exceptions list, not in the rule table. See `docs/exceptions.md` D7.
 
 A robocopied file can legitimately appear to predate its arrival on the volume with no tampering involved.
 
@@ -240,11 +240,43 @@ Explorer cut/paste and Shift+drag produce identical results. Cross-volume drag w
 | Case | Result |
 |---|---|
 | **Browse / select** in Explorer | **Nothing changes.** All eight timestamps unmoved. "Accessed" means opened, not listed. |
-| **Open** from Explorer (Notepad) | Access **and Metadata** update. A programmatic read leaves Metadata alone — this is the application, not NTFS. |
+| **Open** from Explorer (Notepad) | Access **and Metadata** update. A programmatic read leaves Metadata alone. The Metadata change comes from the shell, not from NTFS or Notepad ([below](#why-explorer-changes-entry-modified-object-ids)). |
 | **Recycle Bin delete** | Updates **Metadata** only, like a local move — it *is* a move into `$Recycle.Bin` plus a rename to `$R…`. |
 | **Shift+delete** | Every timestamp unchanged. Matches the CLI delete rules. |
 
 If Metadata moved at deletion time, the file went to the Recycle Bin rather than being permanently deleted.
+
+### Why Explorer changes Entry Modified: object IDs
+
+Opening a file from Explorer changes `$SI` Entry Modified although Notepad only reads the file. The change comes from the shell's link tracking:
+
+1. Explorer adds the file to Recent Items by creating a shortcut in `%APPDATA%\Microsoft\Windows\Recent`.
+2. The shortcut's link-tracking block identifies the target by its NTFS object ID, so that the shortcut can still find the file after a rename or move. A file without an object ID is given one, which adds an `$OBJECT_ID` attribute to its MFT record.
+3. Changing the record updates Entry Modified.
+
+Measured in `explorerauto01`, case 02:
+
+| Time (UTC) | Event |
+|---|---|
+| 16:01:10.699 | Entry Modified changes. The file had no object ID before the open and has `98119dff-cbbe-11f1-8cee-000c296f03cc` after it. |
+| 16:01:10.767 | The Recent shortcut for the file is created. Its link-tracking block holds the same object ID. |
+| 16:01:11.084 | Access changes as Notepad reads the file. |
+
+Explorer adds object IDs on more than "open". The same files gained one in all three passes:
+
+| Gains an object ID | Does not |
+|---|---|
+| Open (02), rename (03), local move by cut/paste or drag (05, 06), the destination file of a cross-volume move (07, 08) | Browse (01), copy (04, 09; source or destination), Recycle Bin delete (10) |
+
+Only "open" creates a Recent shortcut, so for rename and moves the object ID comes from Explorer's file operations rather than Recent Items. None of the case files in the scripted run `core01` has an object ID, on either volume. For rename and local move, the record changes anyway, so the object ID changes no table cell.
+
+**The likely cause of the cross-volume Metadata divergence.** A command-line cross-volume move leaves the destination's Entry Modified inherited from the source, while Explorer's sets it to the time of the move. Explorer also gives the destination file an object ID, which changes its record after the copy. That would also explain Access being written up to 21 ms *before* Entry Modified on these cases (below). It fits all three passes but is not yet tested directly; moving a file that already has an object ID would settle it.
+
+**Forensic reading.**
+
+- An `$OBJECT_ID` on a file is consistent with Explorer having opened, renamed or moved it. Its absence proves nothing: copies, deletes and command-line operations do not add one. Other software can add one too.
+- A Recent shortcut's link-tracking block names the target's object ID, so it identifies the file even after a rename or move.
+- The object ID is a version-1 GUID, but its embedded timestamp does not date the assignment. In these runs, the IDs assigned in one session shared a base time 8 hours to 5 days before the operations, and increased in the order they were assigned. Its last 12 hex digits are a network adapter's MAC address, here the VM's.
 
 ### Incidental: short-name renames drop the second `$FN`
 
@@ -264,8 +296,8 @@ Case for case, the driver's windows are 7 to 170 times narrower than an operator
 
 Two sub-second details are worth recording. Neither changes a rule-table cell.
 
-- **Cross-volume moves (cases 07 and 08).** `$SI` Access is written up to 21 ms *before* Entry Modified, or on the same tick. The ordering varies from pass to pass, including between the two manual passes, so it is Explorer's behavior rather than the driver's. Both values fall within the move and classify as the time of the move in every pass. The `PRECEDES` label these cases receive in `access-vs-entrymodified.csv` is therefore not evidence that the move left Access alone.
-- **Open (case 02).** Access trails Entry Modified by 0.09 to 0.39 seconds in all three passes, so the two are written by separate steps of the open rather than in a single record update.
+- **Cross-volume moves (cases 07 and 08).** `$SI` Access is written up to 21 ms *before* Entry Modified, or on the same tick. The ordering varies from pass to pass, including between the two manual passes, so it is Explorer's behavior rather than the driver's. Both values fall within the move and classify as the time of the move in every pass. The `PRECEDES` label these cases receive in `access-vs-entrymodified.csv` is therefore not evidence that the move left Access alone. The object ID Explorer adds after the copy is the likely reason ([above](#why-explorer-changes-entry-modified-object-ids)).
+- **Open (case 02).** Access trails Entry Modified by 0.09 to 0.39 seconds in all three passes. The two are written by separate steps: Entry Modified when the shell adds the object ID, then Access when Notepad reads the file.
 
 ## 8. Scope
 

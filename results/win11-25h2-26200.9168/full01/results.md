@@ -21,34 +21,9 @@ sees on an ordinary system.
 | | Access | Modification | Rename | Copy | Local Move | Volume Move | Deletion |
 |---|---|---|---|---|---|---|---|
 | **Modified** | no change | op time | no change | inherited | no change | inherited | no change |
-| **Access** | op time | op time | no change | **varies by mechanism** | no change | **varies by mechanism** | no change |
+| **Access** | op time | op time | no change | op time | no change | op time | no change |
 | **Metadata** | no change | op time | op time | inherited | op time | inherited | no change |
-| **Creation** | no change | no change | no change | **varies by mechanism** | no change | **varies by mechanism** | no change |
-
-**Where mechanism matters ($SI):**
-
-| Operation | Timestamp | Mechanism | Result |
-|---|---|---|---|
-| Copy | Access | `cmd_copy` | op time |
-| Copy | Access | `dotnet` | op time |
-| Copy | Access | `powershell` | op time |
-| Copy | Access | `robocopy` | inherited |
-| Copy | Access | `robocopy_dat` | inherited |
-| Copy | Access | `xcopy` | op time |
-| Copy | Creation | `cmd_copy` | op time |
-| Copy | Creation | `dotnet` | op time |
-| Copy | Creation | `powershell` | op time |
-| Copy | Creation | `robocopy` | inherited |
-| Copy | Creation | `robocopy_dat` | inherited |
-| Copy | Creation | `xcopy` | op time |
-| Volume Move | Access | `cmd_move` | op time |
-| Volume Move | Access | `dotnet` | op time |
-| Volume Move | Access | `powershell` | op time |
-| Volume Move | Access | `robocopy_move` | inherited |
-| Volume Move | Creation | `cmd_move` | op time |
-| Volume Move | Creation | `dotnet` | op time |
-| Volume Move | Creation | `powershell` | op time |
-| Volume Move | Creation | `robocopy_move` | inherited |
+| **Creation** | no change | no change | no change | op time | no change | op time | no change |
 
 ### `$FILE_NAME`
 
@@ -58,6 +33,20 @@ sees on an ordinary system.
 | **Access** | no change | no change | indeterminate | op time | indeterminate | op time | no change |
 | **Metadata** | no change | no change | indeterminate | op time | indeterminate | op time | no change |
 | **Creation** | no change | no change | indeterminate | op time | indeterminate | op time | no change |
+
+### Mechanism variations
+
+Every other mechanism tested produced the core result **except** these.
+They are tool behaviour, not NTFS rules, and belong on the exceptions list:
+
+| Attr | Operation | Timestamp | Core result | Mechanism | Its result |
+|---|---|---|---|---|---|
+| `SI` | Copy | Access | op time | `robocopy` | inherited |
+| `SI` | Copy | Access | op time | `robocopy_dat` | inherited |
+| `SI` | Copy | Creation | op time | `robocopy` | inherited |
+| `SI` | Copy | Creation | op time | `robocopy_dat` | inherited |
+| `SI` | Volume Move | Access | op time | `robocopy_move` | inherited |
+| `SI` | Volume Move | Creation | op time | `robocopy_move` | inherited |
 
 > **On "indeterminate" cells.** `$SI` and `$FN` hold identical values on a
 > normally created file, so "unchanged" and "repopulated from `$SI`" produce
@@ -76,29 +65,13 @@ leaves behind.
 | Attr | Operation | Mechanism | Timestamp | Normal | After timestomping |
 |---|---|---|---|---|---|
 | `FN` | Local Move | `powershell` | Access | indeterminate | prev $SI acc |
-| `FN` | Local Move | `dotnet` | Access | indeterminate | prev $SI acc |
-| `FN` | Local Move | `cmd_move` | Access | indeterminate | prev $SI acc |
-| `FN` | Local Move | `dotnet` | Creation | indeterminate | prev $SI create |
 | `FN` | Local Move | `powershell` | Creation | indeterminate | prev $SI create |
-| `FN` | Local Move | `cmd_move` | Creation | indeterminate | prev $SI create |
 | `FN` | Local Move | `powershell` | Metadata | indeterminate | prev $SI meta |
-| `FN` | Local Move | `dotnet` | Metadata | indeterminate | prev $SI meta |
-| `FN` | Local Move | `cmd_move` | Metadata | indeterminate | prev $SI meta |
 | `FN` | Local Move | `powershell` | Modified | indeterminate | prev $SI mod |
-| `FN` | Local Move | `dotnet` | Modified | indeterminate | prev $SI mod |
-| `FN` | Local Move | `cmd_move` | Modified | indeterminate | prev $SI mod |
 | `FN` | Rename | `powershell` | Access | indeterminate | prev $SI acc |
-| `FN` | Rename | `cmd_ren` | Access | indeterminate | prev $SI acc |
-| `FN` | Rename | `dotnet` | Access | indeterminate | prev $SI acc |
 | `FN` | Rename | `powershell` | Creation | indeterminate | prev $SI create |
-| `FN` | Rename | `dotnet` | Creation | indeterminate | prev $SI create |
-| `FN` | Rename | `cmd_ren` | Creation | indeterminate | prev $SI create |
 | `FN` | Rename | `powershell` | Metadata | indeterminate | prev $SI meta |
-| `FN` | Rename | `dotnet` | Metadata | indeterminate | prev $SI meta |
-| `FN` | Rename | `cmd_ren` | Metadata | indeterminate | prev $SI meta |
 | `FN` | Rename | `powershell` | Modified | indeterminate | prev $SI mod |
-| `FN` | Rename | `dotnet` | Modified | indeterminate | prev $SI mod |
-| `FN` | Rename | `cmd_ren` | Modified | indeterminate | prev $SI mod |
 
 Differences here are mostly **resolution, not divergence**: a cell that reads
 _indeterminate_ under normal conditions becomes decidable once `$SI` and `$FN`
@@ -153,20 +126,7 @@ condition only.
 
 | Attr | Operation | Mechanism | Timestamp | 22H2 chart | Observed |
 |---|---|---|---|---|---|
-| `SI` | Copy | `robocopy_dat` | Access | op time | inherited |
-| `SI` | Copy | `robocopy` | Access | op time | inherited |
-| `SI` | Copy | `robocopy` | Creation | op time | inherited |
-| `SI` | Copy | `robocopy_dat` | Creation | op time | inherited |
-| `SI` | Local Move | `dotnet` | Access | op time | no change |
-| `SI` | Local Move | `cmd_move` | Access | op time | no change |
 | `SI` | Local Move | `powershell` | Access | op time | no change |
-| `SI` | Volume Move | `robocopy_move` | Access | op time | inherited |
-| `SI` | Volume Move | `robocopy_move` | Creation | op time | inherited |
 | `SI` | Volume Move | `cmd_move` | Metadata | op time | inherited |
-| `SI` | Volume Move | `robocopy_move` | Metadata | op time | inherited |
-| `SI` | Volume Move | `dotnet` | Metadata | op time | inherited |
-| `SI` | Volume Move | `powershell` | Metadata | op time | inherited |
 | `SI` | Rename | `powershell` | Access | op time | no change |
-| `SI` | Rename | `cmd_ren` | Access | op time | no change |
-| `SI` | Rename | `dotnet` | Access | op time | no change |
 

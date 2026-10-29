@@ -143,22 +143,28 @@ The classifier returns **every** label that fits and marks a cell `AMBIGUOUS` wh
 
 **Live vs `$MFT`** (`pending-writes.csv`). Each case records the live `$SI` read taken immediately after its operation. Where that disagrees with the parsed `$MFT`, the write had not yet reached disk; the live value is authoritative because it is the in-memory record. Reported rather than silently classified, since the failure mode is a false `NO_CHANGE` — which looks exactly like a finding. See [Capture](#capture) for why a flush does not prevent this.
 
-**Access vs Entry Modified** (`access-vs-entrymodified.csv`). A value written by an operation is part of the same MFT record update, so it matches `$SI` Entry Modified **exactly**. Each case is classified:
+**Access vs Entry Modified** (`access-vs-entrymodified.csv`). When an operation writes Access and Entry Modified in the same MFT record update, the two match **exactly**. Each case is classified by the order of the two values:
 
-| Class | Meaning |
-|---|---|
-| `EXACT` | Access == Entry Modified — written by the operation |
-| `TRAILS` | Access 0–30 s **after** — a third party wrote it afterwards |
-| `PRECEDES` | Access older — the operation did not touch it |
-| `LATE` | far later, or Entry Modified inherited from a source file |
+| Class | Measured | Usual reading |
+|---|---|---|
+| `EXACT` | Access equals Entry Modified to the tick | written in the operation's record update |
+| `TRAILS` | Access 0–30 s **after** | written afterwards, e.g. by the indexer |
+| `PRECEDES` | Access **earlier** | not written by the operation's final record update; usually untouched |
+| `LATE` | Access more than 30 s after | far later, or Entry Modified inherited from a source file |
 
-Validation across three runs that differ only in whether the indexer was active:
+The usual reading assumes the operation changes the record once, which is not always the case. Read the class together with the Access verdict:
+
+- **Operations that do not change Entry Modified.** A read updates Access alone, so its Access follows Entry Modified by however long ago the record last changed: `TRAILS` if that was within 30 s, `LATE` otherwise. `full01` and `full02` read their file about 22 s after creating it, and report `TRAILS` for that reason.
+- **Operations that change the record in several steps.** Opening a file from Explorer changes Entry Modified when the shell gives the file an object ID for its Recent Items shortcut; the application's read then sets Access 0.09–0.39 s later (`TRAILS`). Explorer's cross-volume move writes Access up to 21 ms before Entry Modified (`PRECEDES`). See [findings §7](../results/win11-25h2-26200.9168/findings.md#7-explorer-vs-cli--the-only-operation-where-the-tool-matters).
+- **Two kinds of `PRECEDES`.** A millisecond `PRECEDES` on an `OP_TIME` verdict was written during the operation. An untouched Access precedes Entry Modified by roughly the file's age when the operation ran.
+
+Validation across three runs that differ only in whether the indexer was active (counts cover both parsers and both variants):
 
 | Run | indexer | `TRAILS` | `EXACT` |
 |---|---|---|---|
-| indexed location | running | **36** | 0 |
-| same location | disabled | 0 | 26 |
-| clean room | stopped | 0 | 26 |
+| `indexed01`, indexed location | running | **62** | 0 |
+| `noindex01`, same location | disabled | 0 | 40 |
+| `core01`, clean room | stopped | 0 | 40 |
 
 No false positives on either control. This check is what established that rename does not write Access even on an indexed volume — the indexer does, roughly a second later.
 

@@ -444,9 +444,17 @@ foreach ($case in $run.Cases) {
 }
 
 # ------------------------------------- Access vs Entry Modified correlation
-# A timestamp written BY an operation is part of the same MFT record update,
-# so it matches $SI Entry Modified EXACTLY. Anything that writes Access
-# afterwards -- a search crawler, a scanner -- leaves a small positive gap.
+# When an operation writes Access in the same MFT record update as Entry
+# Modified, the two match EXACTLY. Anything that writes Access afterwards --
+# a search crawler, a scanner -- leaves a small positive gap.
+#
+# The class describes the order of the two values, not who wrote Access. It
+# assumes the operation changes the record once. A read never changes Entry
+# Modified, so its Access always follows by the time since the record last
+# changed. Some Explorer operations change the record in several steps: an
+# open sets Entry Modified (object ID for the Recent shortcut) before the
+# application's read sets Access, and a cross-volume move writes Access a few
+# ms before Entry Modified. Read the class together with the Access verdict.
 #
 # This distinction is invisible to the verdict classifier, whose OP_TIME label
 # uses a multi-second tolerance window and therefore cannot separate "the
@@ -462,10 +470,10 @@ foreach ($g in ($precision | Where-Object { $_.Attribute -eq 'SI' } |
     if (-not $em -or -not $ac -or -not $em.AfterValue -or -not $ac.AfterValue) { continue }
     $d = (Get-Dt $ac.AfterValue) - (Get-Dt $em.AfterValue)
     $sec = $d.TotalSeconds
-    $cls = if ($sec -eq 0)                      { 'EXACT'    }   # written by the operation
-           elseif ($sec -gt 0 -and $sec -le 30) { 'TRAILS'   }   # third party wrote it after
+    $cls = if ($sec -eq 0)                      { 'EXACT'    }   # same record update as the operation
+           elseif ($sec -gt 0 -and $sec -le 30) { 'TRAILS'   }   # written after it -- usually a third party
            elseif ($sec -gt 30)                 { 'LATE'     }
-           else                                 { 'PRECEDES' }   # untouched by the operation
+           else                                 { 'PRECEDES' }   # not written by its final update -- usually untouched
     $accessDelta.Add([pscustomobject]@{
         CaseId=$em.CaseId; Operation=$em.Operation; Mechanism=$em.Mechanism
         Variant=$em.Variant; Tool=$em.Tool
@@ -534,7 +542,7 @@ Write-Host ("  TOOL DISAGREEMENT    : {0}" -f $disagree.Count)  -ForegroundColor
 Write-Host ("  ambiguous            : {0}" -f $ambiguous.Count)
 Write-Host ("  zero sub-second frac : {0}%  (normal variant; genuine NTFS values are almost never round)" -f $zeroRate)
 Write-Host ("  LIVE vs MFT mismatch : {0}  (deferred write not yet on disk -- live value is authoritative)" -f $pendingWrites.Count) -ForegroundColor $(if($pendingWrites.Count){'Yellow'}else{'Gray'})
-Write-Host ("  Access TRAILS EntryMod: {0}  (Access written AFTER the operation -- crawler/scanner, not the operation)" -f $trailing.Count) -ForegroundColor $(if($trailing){'Yellow'}else{'Gray'})
+Write-Host ("  Access TRAILS EntryMod: {0}  (Access written AFTER Entry Modified -- usually a crawler/scanner)" -f $trailing.Count) -ForegroundColor $(if($trailing){'Yellow'}else{'Gray'})
 Write-Host ("  LOSSY RESTORES       : {0}  (same second, fraction zeroed -- read-then-SetFileTime)" -f $lossyRows.Count) -ForegroundColor $(if($lossyRows){'Red'}else{'Gray'})
 if (@($run.Snapshots.Late).Count -gt 0) {
     Write-Host ("  DEFERRED updates     : {0}  (late capture +{1} min)" -f $deferred.Count, $run.LateCaptureMinutes) -ForegroundColor $(if($deferred){'Yellow'}else{'Gray'})

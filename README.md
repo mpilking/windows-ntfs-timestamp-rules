@@ -71,7 +71,7 @@ results/<build>/            fingerprint, archived $MFT, parsed output, findings
 
 **Differences due to volume geometry and size are measured, not assumed.** The full matrix runs four times, each with a different volume as primary: 64 GB and 256 GB (testing the historical 128 GB threshold), 4K and 64K clusters, VHDX and physical backing. The rule tables generalize rather than describing one configuration, unless differences are observed.
 
-**Archived `$MFT` files are the evidence.** Each run keeps the extracted `$MFT` and its hash, so a third party can re-derive the conclusions.
+**Archived `$MFT` files are the evidence.** Each run keeps its extracted `$MFT` files, a `run.json` holding their SHA256 and every parser's reading of each case, and the classifier output, so a third party can re-derive the conclusions. The one gap is the `C:` system volume, whose 277 MB `$MFT` exceeds GitHub's file size limit; for the three runs that used it (`indexed01`, `noindex01`, `vol_Cphys`), the parsed records in `run.json` are archived instead.
 
 ## Before relying on these tables
 
